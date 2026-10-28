@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Profile photo placeholder">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3a2b10"/><stop offset="1" stop-color="#11110f"/></linearGradient></defs>
-  <rect width="400" height="400" fill="url(#g)"/>
-  <circle cx="200" cy="145" r="70" fill="#d7b56d" opacity=".85"/>
-  <path d="M70 380c8-92 58-140 130-140s122 48 130 140" fill="#d7b56d" opacity=".85"/>
-  <text x="200" y="370" font-family="Arial,sans-serif" font-size="20" fill="#11110f" text-anchor="middle" font-weight="700">YOUR PHOTO</text>
-</svg>
