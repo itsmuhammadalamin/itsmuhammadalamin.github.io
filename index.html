@@ -53,9 +53,50 @@
     .card:hover{transform:translateY(-5px);border-color:rgba(216,180,90,.55)}
     .card-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;color:var(--gold2);background:rgba(216,180,90,.1);font-size:1.2rem;margin-bottom:17px}
     .card h3{margin:0 0 8px;font-size:1.08rem}.card p{margin:0;color:var(--muted);font-size:.94rem}
-    .socials{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
-    .social{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:11px 15px;color:#e7e0cf;font-weight:650;font-size:.9rem;transition:all .25s}
-    .social:hover{color:var(--gold2);border-color:var(--gold);transform:translateY(-2px);background:rgba(216,180,90,.06)}
+    
+.socials{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+  margin-top:28px;
+}
+.social{
+  min-height:100px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:18px 12px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(216,180,90,.025));
+  color:#e7e0cf;
+  font-weight:700;
+  font-size:1rem;
+  text-align:center;
+  text-decoration:none;
+  transition:all .3s ease;
+}
+.social:hover{
+  color:#17130a;
+  border-color:var(--gold2);
+  background:linear-gradient(120deg,var(--gold),var(--gold2));
+  transform:translateY(-5px);
+  box-shadow:0 10px 28px rgba(216,180,90,.16);
+}
+.social:focus-visible{
+  outline:2px solid var(--gold2);
+  outline-offset:4px;
+}
+@media(max-width:760px){
+  .socials{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .social{min-height:90px;padding:16px 10px;font-size:.92rem}
+}
+@media(max-width:420px){
+  .socials{gap:9px}
+  .social{font-size:.85rem;min-height:82px}
+}
+
     footer{padding:26px 0 34px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#858176;font-size:.82rem}
     .footer-mark{color:var(--gold)}
     .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
@@ -131,15 +172,29 @@ My goal is to build a secure and independent future through hard work, knowledge
           <h2>Find me <span class="gold">online.</span></h2>
           <p>Choose your preferred platform to connect with me.</p>
         </div>
-        <div class="socials">
-          <a class="social" href="https://www.facebook.com/share/1YnsPsmo5G/" target="_blank" rel="noopener noreferrer">f&nbsp; Facebook ↗</a>
-          <a class="social" href="https://www.instagram.com/its.muhammadalamin/" target="_blank" rel="noopener noreferrer">◎&nbsp; Instagram ↗</a>
-          <a class="social" href="https://t.me/its_muhammadalamin" target="_blank" rel="noopener noreferrer">➤&nbsp; Telegram ↗</a>
-          <a class="social" href="https://wa.me/8801737973100" target="_blank" rel="noopener noreferrer">◉&nbsp; WhatsApp ↗</a>
-          <a class="social" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=its.muhammadalamin@gmail.com" target="_blank" rel="noopener noreferrer">✉&nbsp; Email ↗</a>
+        
+<div class="socials">
+  <a class="social" href="https://www.facebook.com/share/1YnsPsmo5G/" target="_blank" rel="noopener noreferrer">
+    <span aria-hidden="true">f</span> Facebook ↗
+  </a>
 
+  <a class="social" href="https://www.instagram.com/its.muhammadalamin/" target="_blank" rel="noopener noreferrer">
+    <span aria-hidden="true">◎</span> Instagram ↗
+  </a>
 
-        </div>
+  <a class="social" href="https://t.me/its_muhammadalamin" target="_blank" rel="noopener noreferrer">
+    <span aria-hidden="true">➤</span> Telegram ↗
+  </a>
+
+  <a class="social" href="https://wa.me/8801737973100" target="_blank" rel="noopener noreferrer">
+    <span aria-hidden="true">◉</span> WhatsApp ↗
+  </a>
+
+  <a class="social" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=its.muhammadalamin@gmail.com" target="_blank" rel="noopener noreferrer">
+    <span aria-hidden="true">✉</span> Email ↗
+  </a>
+</div>
+
       </section>
     </main>
 
