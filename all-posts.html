@@ -306,7 +306,7 @@ function renderPosts() {
     grid.innerHTML = '<div class="empty">No stories found.</div>';
   } else {
     grid.innerHTML = visible.map(post => `
-     <a class="post-link" href="#reader" data-post-id="${escapeHTML(post.id)}" aria-label="Read ${escapeHTML(post.title)}">
+     <a class="post-link" href="/post.html?slug=${encodeURIComponent(post.slug)}" aria-label="Read ${escapeHTML(post.title)}">
       <article class="post">
         ${post.image_url
           ? `<img src="${escapeHTML(post.image_url)}" alt="${escapeHTML(post.title)}" loading="lazy">`
@@ -388,14 +388,6 @@ function closeReader() {
   document.getElementById("reader").classList.remove("active");
   document.body.style.overflow = "";
 }
-
-// Open database-backed stories in the built-in reader instead of a missing static URL.
-grid.addEventListener("click", event => {
-  const link = event.target.closest("a.post-link[data-post-id]");
-  if (!link) return;
-  event.preventDefault();
-  openReader(link.dataset.postId);
-});
 
 // Native article links handle both pointer and keyboard navigation.
 
