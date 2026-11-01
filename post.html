@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<meta name="robots" content="index,follow">
+<title>Chronicle | Muhammad Alamin</title>
+<meta name="description" content="পড়ুন Chronicle-এ প্রকাশিত লেখা ও ব্যক্তিগত গল্প।">
+<link rel="canonical" href="https://itsmuhammadalamin.github.io/post.html">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Chronicle — Muhammad Alamin">
+<meta property="og:title" content="Chronicle | Muhammad Alamin">
+<meta property="og:description" content="পড়ুন Chronicle-এ প্রকাশিত লেখা ও ব্যক্তিগত গল্প।">
+<meta property="og:url" content="https://itsmuhammadalamin.github.io/post.html">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--bg:#080808;--gold:#d8b45a;--gold2:#f5df9a;--muted:#b4b0a5;--white:#f7f4eb;--line:rgba(216,180,90,.22)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,rgba(216,180,90,.1),transparent 45%),var(--bg);color:var(--white);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+.wrap{width:min(820px,calc(100% - 32px));margin:auto}header{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}a{color:var(--gold2);text-decoration:none}.brand{font-weight:850;letter-spacing:.08em}.brand span{color:var(--gold)}.back{font-size:.9rem}
+main{padding:42px 0 70px}.category{color:var(--gold2);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.date{color:var(--muted);font-size:.85rem;margin-top:10px}h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.25;margin:12px 0}.excerpt{font-size:1.08rem;color:var(--muted);margin:20px 0 28px}.cover{width:100%;max-height:520px;object-fit:cover;border-radius:18px;border:1px solid var(--line);margin:12px 0 28px}.body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:1.04rem;color:#e0dccf}.credit{font-size:.82rem;color:var(--muted);margin-top:-18px;margin-bottom:25px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:35px;padding-top:22px;border-top:1px solid var(--line)}button{border:1px solid var(--line);border-radius:30px;padding:10px 17px;background:#171612;color:var(--gold2);font:inherit;cursor:pointer}.message{color:var(--muted);padding:35px 0}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.85rem}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/">MA<span>.</span> CHRONICLE</a><a class="back" href="/all-posts.html">← সব লেখা</a></header>
+<main id="article"><p class="message">লেখা লোড হচ্ছে...</p></main>
+<footer>© <span id="year"></span> Muhammad Alamin · A Personal Chronicle</footer>
+</div>
+<script>
+const SUPABASE_URL="https://ahfzumcsyjwkvpgcjuuy.supabase.co";
+const SUPABASE_KEY="sb_publishable_l6zAy75h8KD25MuVY3gcHw_tFrCFSX3";
+const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const root="https://itsmuhammadalamin.github.io";
+const article=document.getElementById("article");
+const slug=new URLSearchParams(location.search).get("slug");
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function date(v){if(!v)return "";const d=new Date(v);return Number.isNaN(d.getTime())?"":d.toLocaleDateString("bn-BD",{year:"numeric",month:"long",day:"numeric"});}
+async function load(){
+ if(!slug){article.innerHTML='<p class="message">এই লেখার ঠিকানাটি সঠিক নয়। <a href="/all-posts.html">সব লেখা দেখুন</a></p>';return;}
+ try{
+  const {data,error}=await client.from("posts").select("title,slug,category,excerpt,content,image_url,image_credit,image_source_url,created_at,published").eq("slug",slug).eq("published",true).maybeSingle();
+  if(error)throw error;if(!data)throw new Error("লেখাটি পাওয়া যায়নি।");
+  const url=root+"/post.html?slug="+encodeURIComponent(data.slug);
+  document.title=data.title+" | Chronicle — Muhammad Alamin";
+  document.querySelector('meta[name="description"]').content=(data.excerpt||data.content||"Chronicle-এ প্রকাশিত একটি লেখা।").slice(0,155);
+  document.querySelector('link[rel="canonical"]').href=url;
+  document.querySelector('meta[property="og:url"]').content=url;
+  document.querySelector('meta[property="og:title"]').content=data.title;
+  document.querySelector('meta[property="og:description"]').content=(data.excerpt||"").slice(0,200);
+  if(data.image_url){let og=document.createElement("meta");og.setAttribute("property","og:image");og.content=data.image_url;document.head.appendChild(og);}
+  article.innerHTML=`
+   <span class="category">${esc(data.category||"Memories")}</span>
+   <h1>${esc(data.title)}</h1>
+   <div class="date">${esc(date(data.created_at))}</div>
+   ${data.excerpt?`<p class="excerpt">${esc(data.excerpt)}</p>`:""}
+   ${data.image_url?`<img class="cover" src="${esc(data.image_url)}" alt="${esc(data.title)}">`:""}
+   ${data.image_credit?`<p class="credit">ছবির কৃতিত্ব: ${esc(data.image_credit)} ${data.image_source_url?`· <a href="${esc(data.image_source_url)}" target="_blank" rel="noopener">সূত্র</a>`:""}</p>`:""}
+   <div class="body">${esc(data.content||data.excerpt||"")}</div>
+   <div class="actions"><button id="share">↗ শেয়ার করুন</button><a href="/all-posts.html">← সব লেখা</a></div>`;
+  document.getElementById("share").addEventListener("click",async()=>{
+   const shareData={title:data.title,text:data.excerpt||data.title,url};
+   try{if(navigator.share)await navigator.share(shareData);else{await navigator.clipboard.writeText(url);alert("লিংক কপি হয়েছে।");}}
+   catch(e){if(e.name!=="AbortError")alert("লিংক কপি করতে পারেনি: "+e.message);}
+  });
+ }catch(e){console.error(e);article.innerHTML='<p class="message">'+esc(e.message||"লেখাটি লোড করা যায়নি।")+'<br><a href="/all-posts.html">সব লেখা দেখুন</a></p>';}
+}
+document.getElementById("year").textContent=new Date().getFullYear();load();
+</script></body></html>
