@@ -23,12 +23,35 @@ img{width:100%;max-height:480px;object-fit:contain;border-radius:16px;margin:28p
 .excerpt{font-size:19px;color:#e4d8b8;border-left:3px solid var(--gold);padding-left:18px;margin:28px 0}
 .content{white-space:pre-wrap;overflow-wrap:anywhere;color:#ddd6c7}.content p{margin:0 0 1.3em}
 footer{border-top:1px solid #3b321e;padding:22px 0;color:var(--muted);font-size:14px}
+
+.share-row{margin:18px 0 28px}.share-btn{display:inline-flex;align-items:center;gap:9px;padding:10px 17px;border:1px solid #80652d;border-radius:999px;background:#17140d;color:var(--gold2);font:600 14px system-ui;cursor:pointer;transition:.2s}.share-btn:hover{background:#292111;border-color:var(--gold)}.share-btn:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
 </style>
 </head>
 <body><div class="wrap"><header><a class="brand" href="/">MA<span>.</span></a><a href="/all-posts.html">View all posts ↗</a></header>
 <main><article><div class="category">Writing</div><h1>A Little About Me</h1>
 <div class="meta">লেখক: Muhammad Alamin · ১ নভেম্বর, ২০২৬</div>
+<div class="share-row"><button class="share-btn" id="shareArticle" type="button" aria-label="Share this article">↗ <span>Share article</span></button></div>
 <img src="https://ahfzumcsyjwkvpgcjuuy.supabase.co/storage/v1/object/public/chronicle-images/89a1f526-ebbe-4f1c-b016-1eafc0e44f48.jpg" alt="A Little About Me" fetchpriority="high">
 <p class="excerpt">A small introduction to who I am, what I believe in, and the dreams I carry.</p>
 <div class="content"><p>Every person has a story, and this is a small place where I want to keep mine.</p><p>I'm Muhammad Alamin. I believe in learning, personal growth, and building a better future. My journey has taught me that success is not only about money or achievements; peace of mind, honesty, and the people we care about matter just as much.</p><p>I'm currently learning Japanese, improving my technical skills, and working toward my dream of visiting Japan someday.</p><p>I created this space to collect my thoughts, experiences, journeys, photographs, and memories. Some stories may be simple, some meaningful, but every moment has its own value.</p><p>This is my little corner of the internet.</p><p>Welcome to A Personal Chronicle.</p></div>
-</article></main><footer>© 2026 Muhammad Alamin · Chronicle</footer></div></body></html>
+</article></main><footer>© 2026 Muhammad Alamin · Chronicle</footer></div><script>
+(function(){
+  const button=document.getElementById("shareArticle");
+  if(!button) return;
+  button.addEventListener("click",async function(){
+    const shareData={title:document.title,text:document.querySelector(".excerpt")?.textContent||document.title,url:window.location.href};
+    try{
+      if(navigator.share){await navigator.share(shareData);}
+      else if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(shareData.url);
+        button.querySelector("span").textContent="Link copied!";
+        setTimeout(()=>button.querySelector("span").textContent="Share article",2200);
+      }else{
+        window.prompt("Copy this article link:",shareData.url);
+      }
+    }catch(error){
+      if(error.name!=="AbortError") window.prompt("Copy this article link:",shareData.url);
+    }
+  });
+})();
+</script></body></html>
