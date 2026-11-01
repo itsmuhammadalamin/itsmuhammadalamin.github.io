@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="Explore all stories, journeys, thoughts and moments by Muhammad Alamin.">
+<title>All Posts | Muhammad Alamin</title>
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<style>
+:root {
+  --bg:#080808;
+  --panel:#11110f;
+  --gold:#d8b45a;
+  --gold2:#f5df9a;
+  --muted:#b4b0a5;
+  --white:#f7f4eb;
+  --line:rgba(216,180,90,.22);
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--white);
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+  line-height:1.65;
+}
+a {color:inherit;text-decoration:none}
+.wrap {width:min(1100px,calc(100% - 40px));margin:auto}
+header {
+  display:flex;justify-content:space-between;align-items:center;
+  padding:22px 0;border-bottom:1px solid var(--line);
+}
+.brand {font-weight:800;letter-spacing:.08em}
+.brand span {color:var(--gold)}
+.back {color:var(--gold2);font-size:.9rem}
+.hero {padding:55px 0 30px}
+.kicker {
+  color:var(--gold);font-size:.74rem;font-weight:800;
+  letter-spacing:.2em;text-transform:uppercase
+}
+h1 {font-size:clamp(2.2rem,6vw,3.5rem);line-height:1.1;margin:10px 0}
+.gold {color:var(--gold)}
+.hero p {color:var(--muted);margin:0}
+.controls {
+  display:flex;gap:12px;flex-wrap:wrap;margin:25px 0;
+}
+input,select {
+  background:#15140f;color:var(--white);
+  border:1px solid var(--line);border-radius:12px;
+  padding:13px 15px;font:inherit;outline:none;
+}
+input {flex:1;min-width:200px}
+select {min-width:180px}
+input:focus,select:focus {border-color:var(--gold)}
+.grid {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+}
+.post {
+  overflow:hidden;border:1px solid var(--line);
+  border-radius:18px;background:var(--panel);
+}
+.post img {
+  width:100%;height:220px;object-fit:cover;display:block;
+}
+.post-info {padding:19px}
+.category {
+  color:var(--gold2);font-size:.7rem;font-weight:800;
+  letter-spacing:.13em;text-transform:uppercase;
+}
+.post h2 {font-size:1.1rem;line-height:1.35;margin:8px 0}
+.post p {color:var(--muted);font-size:.9rem;margin:0 0 12px}
+.date {font-size:.78rem;color:#898477}
+.empty {
+  grid-column:1/-1;text-align:center;padding:45px 15px;
+  color:var(--muted);border:1px dashed var(--line);border-radius:16px;
+}
+.pagination {
+  display:flex;justify-content:center;align-items:center;
+  gap:15px;margin:35px 0 55px;
+}
+.pagination button {
+  padding:10px 18px;border:1px solid var(--line);
+  border-radius:30px;background:#171612;color:var(--gold2);
+  cursor:pointer;font:inherit;
+}
+.pagination button:disabled {opacity:.35;cursor:not-allowed}
+#pageInfo {color:var(--muted);font-size:.9rem}
+footer {
+  border-top:1px solid var(--line);padding:22px 0;
+  color:var(--muted);font-size:.85rem;
+}
+@media(max-width:760px) {
+  .grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px) {
+  .wrap {width:calc(100% - 28px)}
+  .grid {grid-template-columns:1fr}
+  .post img {height:230px}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="brand" href="/">MA<span>.</span></a>
+  <a class="back" href="/">← Back to Home</a>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="kicker">Stories · Journeys · Moments</span>
+    <h1>All <span class="gold">Posts.</span></h1>
+    <p>Explore my stories, travels, photographs and memories.</p>
+  </section>
+
+  <div class="controls">
+    <input id="search" type="search" placeholder="Search posts...">
+    <select id="category">
+      <option value="All">All Categories</option>
+      <option value="Travel">Travel</option>
+      <option value="Photography">Photography</option>
+      <option value="Writing">Writing</option>
+      <option value="Memories">Memories</option>
+    </select>
+  </div>
+
+  <section class="grid" id="postsGrid">
+    <div class="empty">Loading stories...</div>
+  </section>
+
+  <div class="pagination">
+    <button id="prev" disabled>← Previous</button>
+    <span id="pageInfo">Page 1</span>
+    <button id="next" disabled>Next →</button>
+  </div>
+</main>
+
+<footer>© <span id="year"></span> Muhammad Alamin</footer>
+</div>
+
+<script>
+const SUPABASE_URL = "https://ahfzumcsyjwkvpgcjuuy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_l6zAy75h8KD25MuVY3gcHw_tFrCFSX3";
+
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const grid = document.getElementById("postsGrid");
+const search = document.getElementById("search");
+const category = document.getElementById("category");
+const prev = document.getElementById("prev");
+const next = document.getElementById("next");
+const pageInfo = document.getElementById("pageInfo");
+
+const PAGE_SIZE = 9;
+let allPosts = [];
+let currentPage = 1;
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#039;"
+  })[char]);
+}
+
+function formatDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("en-US", {
+    year:"numeric",month:"long",day:"numeric"
+  });
+}
+
+function renderPosts() {
+  const term = search.value.trim().toLowerCase();
+  const selected = category.value;
+
+  const filtered = allPosts.filter(post => {
+    const matchesSearch =
+      (post.title || "").toLowerCase().includes(term) ||
+      (post.excerpt || "").toLowerCase().includes(term);
+
+    const matchesCategory =
+      selected === "All" || post.category === selected;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  currentPage = Math.min(currentPage, totalPages);
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const visible = filtered.slice(start, start + PAGE_SIZE);
+
+  if (!visible.length) {
+    grid.innerHTML = '<div class="empty">No stories found.</div>';
+  } else {
+    grid.innerHTML = visible.map(post => `
+      <a class="post" href="/#chronicle" aria-label="View ${escapeHTML(post.title)}">
+        ${post.image_url
+          ? `<img src="${escapeHTML(post.image_url)}" alt="${escapeHTML(post.title)}" loading="lazy">`
+          : ""}
+        <div class="post-info">
+          <span class="category">${escapeHTML(post.category || "Memories")}</span>
+          <h2>${escapeHTML(post.title)}</h2>
+          <p>${escapeHTML(post.excerpt || "")}</p>
+          <span class="date">${escapeHTML(formatDate(post.created_at))}</span>
+        </div>
+      </a>
+    `).join("");
+  }
+
+  pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+  prev.disabled = currentPage <= 1;
+  next.disabled = currentPage >= totalPages;
+}
+
+async function loadPosts() {
+  try {
+    const {data,error} = await client
+      .from("posts")
+      .select("id,title,slug,category,excerpt,image_url,created_at")
+      .eq("published",true)
+      .order("created_at",{ascending:false});
+
+    if (error) throw error;
+    allPosts = data || [];
+    renderPosts();
+  } catch(error) {
+    console.error(error);
+    grid.innerHTML = '<div class="empty">Unable to load stories. Please try again later.</div>';
+  }
+}
+
+search.addEventListener("input",() => {
+  currentPage = 1;
+  renderPosts();
+});
+category.addEventListener("change",() => {
+  currentPage = 1;
+  renderPosts();
+});
+prev.addEventListener("click",() => {
+  if (currentPage > 1) {
+    currentPage--;
+    renderPosts();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+});
+next.addEventListener("click",() => {
+  currentPage++;
+  renderPosts();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+document.getElementById("year").textContent = new Date().getFullYear();
+loadPosts();
+</script>
+</body>
+</html>
