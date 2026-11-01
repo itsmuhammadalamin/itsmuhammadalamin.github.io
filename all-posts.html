@@ -379,9 +379,11 @@ function closeReader() {
 }
 
 grid.addEventListener("click", event => {
-  if (event.target.closest("a")) return;
-  const post = event.target.closest(".post");
-  if (post) openReader(post.dataset.postId);
+  const link = event.target.closest("a");
+  if (link) return;
+  const postCard = event.target.closest(".post");
+  if (!postCard) return;
+  openReader(postCard.getAttribute("data-post-id"));
 });
 
 grid.addEventListener("keydown", event => {
