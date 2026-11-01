@@ -115,7 +115,7 @@ ${image}
 ${post.excerpt ? '<p class="excerpt">' + esc(post.excerpt) + "</p>" : ""}
 ${cover}${credit}
 <article class="body">${renderMarkdown(post.content || post.excerpt || "")}</article>
-<div class="actions"><button id="share">↗ Share article</button><a href="/all-posts.html">← All Posts</a></div>
+<div class="actions"><button id="share">↗ Share article</button></div>
 </main>
 <footer>© <span id="year"></span> Muhammad Alamin · A Personal Chronicle</footer>
 </div>
