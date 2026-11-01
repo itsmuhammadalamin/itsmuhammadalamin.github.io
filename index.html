@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   
 <!-- Google tag (gtag.js) -->
@@ -15,10 +15,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080808">
-  <meta name="description" content="Official personal website of Muhammad Alamin — interests, goals, stories, journeys and moments.">
+  <meta name="description" content="Muhammad Alamin-এর Chronicle: বাংলা ভাবনা, ইসলামিক লেখা, ভ্রমণ, ব্যক্তিগত অভিজ্ঞতা ও জীবনের গল্প পড়ুন।">
   <meta name="author" content="Muhammad Alamin">
-  <meta property="og:title" content="Muhammad Alamin | Personal Website">
-  <meta property="og:description" content="A little corner of the internet belonging to Muhammad Alamin.">
+  <meta property="og:title" content="Chronicle — Muhammad Alamin | বাংলা গল্প, ভাবনা ও অভিজ্ঞতা">
+  <meta property="og:description" content="বাংলা ভাবনা, ইসলামিক লেখা, ভ্রমণ ও জীবনের গল্পের ব্যক্তিগত সংগ্রহ।">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://itsmuhammadalamin.github.io/">
   <meta property="og:image" content="https://itsmuhammadalamin.github.io/profile.jpg">
@@ -914,7 +914,7 @@
                 <h3>${title}</h3>
                 <p>${excerpt}</p>
                 <span class="post-date">${date}</span>
-                <span class="read-more">Read story ↗</span>
+                <a class="read-more" href="/posts/${encodeURIComponent(post.slug)}/">Read full article ↗</a>
               </div>
 
             </article>
@@ -1015,6 +1015,7 @@
     }
 
     chronicleGrid.addEventListener("click", function(event) {
+      if (event.target.closest("a")) return;
       const card = event.target.closest(".post-card");
       if (card) openPost(card.dataset.postId);
     });
