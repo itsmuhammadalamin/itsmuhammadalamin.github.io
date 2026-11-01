@@ -372,7 +372,12 @@ async function loadPosts() {
     renderPosts();
   } catch(error) {
     console.error(error);
-    grid.innerHTML = '<div class="empty">Unable to load stories. Please try again later.</div>';
+    grid.innerHTML = `
+  <div class="empty">
+    <strong>Unable to load stories.</strong>
+    <p>${escapeHTML(error.message || "Unknown error")}</p>
+    <p>Error code: ${escapeHTML(error.code || "N/A")}</p>
+  </div>`;
   }
 }
 
