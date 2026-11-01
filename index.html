@@ -911,10 +911,12 @@
         console.error("Chronicle loading error:", error);
 
         chronicleGrid.innerHTML = `
-          <div class="chronicle-status">
-            <strong>Unable to load stories.</strong>
-            Please try again later.
-          </div>`;
+  <div class="chronicle-status">
+    <strong>Unable to load stories.</strong>
+    ${escapeHTML(error.message || "Unknown error")}
+    <br>
+    Error code: ${escapeHTML(error.code || "N/A")}
+  </div>`;
 
       }
     }
