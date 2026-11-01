@@ -295,7 +295,9 @@ function renderPosts() {
     grid.innerHTML = '<div class="empty">No stories found.</div>';
   } else {
     grid.innerHTML = visible.map(post => `
-     <article class="post" aria-label="${escapeHTML(post.title)}">
+     <article class="post" tabindex="0" role="button"
+        data-post-id="${escapeHTML(post.id)}"
+        aria-label="Read ${escapeHTML(post.title)}">
         ${post.image_url
           ? `<img src="${escapeHTML(post.image_url)}" alt="${escapeHTML(post.title)}" loading="lazy">`
           : ""}
@@ -304,7 +306,7 @@ function renderPosts() {
           <h2>${escapeHTML(post.title)}</h2>
           <p>${escapeHTML(post.excerpt || "")}</p>
           <span class="date">${escapeHTML(formatDate(post.created_at))}</span>
-          <a class="read-more" href="/posts/${encodeURIComponent(post.slug)}/">সম্পূর্ণ লেখা পড়ুন ↗</a>
+          <a class="read-more" href="/posts/${encodeURIComponent(post.slug)}/">Read full article ↗</a>
         </div>
       </article>
     `).join("");
@@ -377,6 +379,7 @@ function closeReader() {
 }
 
 grid.addEventListener("click", event => {
+  if (event.target.closest("a")) return;
   const post = event.target.closest(".post");
   if (post) openReader(post.dataset.postId);
 });
