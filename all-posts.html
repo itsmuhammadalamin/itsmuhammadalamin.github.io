@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   
 <!-- Google tag (gtag.js) -->
@@ -15,8 +15,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080808">
-<meta name="description" content="Explore all stories, journeys, thoughts and moments by Muhammad Alamin.">
-<title>All Posts | Muhammad Alamin</title>
+<meta name="description" content="Chronicle-এ Muhammad Alamin-এর বাংলা লেখা, ইসলামিক ভাবনা, ভ্রমণ, অভিজ্ঞতা ও সব প্রকাশিত পোস্ট পড়ুন।">
+<title>সব লেখা ও গল্প | Chronicle — Muhammad Alamin</title>
 <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
 <style>
 :root {
@@ -295,9 +295,7 @@ function renderPosts() {
     grid.innerHTML = '<div class="empty">No stories found.</div>';
   } else {
     grid.innerHTML = visible.map(post => `
-     <article class="post" tabindex="0" role="button"
-  data-post-id="${escapeHTML(post.id)}"
-  aria-label="Read ${escapeHTML(post.title)}">
+     <article class="post" aria-label="${escapeHTML(post.title)}">
         ${post.image_url
           ? `<img src="${escapeHTML(post.image_url)}" alt="${escapeHTML(post.title)}" loading="lazy">`
           : ""}
@@ -306,6 +304,7 @@ function renderPosts() {
           <h2>${escapeHTML(post.title)}</h2>
           <p>${escapeHTML(post.excerpt || "")}</p>
           <span class="date">${escapeHTML(formatDate(post.created_at))}</span>
+          <a class="read-more" href="/posts/${encodeURIComponent(post.slug)}/">সম্পূর্ণ লেখা পড়ুন ↗</a>
         </div>
       </article>
     `).join("");
