@@ -167,6 +167,13 @@ footer {
   border-radius:14px;
   margin:22px 0;
 }
+.image-credit {
+  margin:-10px 0 20px;
+  color:#b4b0a5;
+  font-size:.82rem;
+  overflow-wrap:anywhere;
+}
+.image-credit a { color:#f5df9a;text-decoration:underline;text-underline-offset:3px; }
 #readerBody {
   color:#d0cabb;
   white-space:pre-wrap;
@@ -221,6 +228,7 @@ footer {
     <h2 id="readerTitle"></h2>
     <div class="date" id="readerDate"></div>
     <img id="readerImage" alt="" hidden>
+    <div id="readerImageCredit" class="image-credit" hidden></div>
     <div id="readerBody"></div>
   </article>
 </div>
@@ -334,6 +342,31 @@ function openReader(postId) {
     image.removeAttribute("src");
   }
 
+  const creditBox = document.getElementById("readerImageCredit");
+  creditBox.replaceChildren();
+  if (post.image_credit || post.image_source_url) {
+    const creditText = document.createElement("span");
+    creditText.textContent = post.image_credit
+      ? "Photo credit: " + post.image_credit
+      : "Photo source";
+    creditBox.append(creditText);
+    if (post.image_source_url) {
+      let source;
+      try { source = new URL(post.image_source_url); } catch {}
+      if (source && ["http:", "https:"].includes(source.protocol)) {
+        const link = document.createElement("a");
+        link.href = source.href;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = " · View source ↗";
+        creditBox.append(link);
+      }
+    }
+    creditBox.hidden = false;
+  } else {
+    creditBox.hidden = true;
+  }
+
   document.getElementById("reader").classList.add("active");
   document.body.style.overflow = "hidden";
 }
@@ -373,7 +406,7 @@ async function loadPosts() {
   try {
     const {data,error} = await client
       .from("posts")
-      .select("id,title,slug,category,excerpt,content,image_url,created_at")
+      .select("id,title,slug,category,excerpt,content,image_url,image_credit,image_source_url,created_at")
       .eq("published",true)
       .order("created_at",{ascending:false});
 
