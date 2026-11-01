@@ -72,6 +72,7 @@ input:focus,select:focus {border-color:var(--gold)}
 .post-link, .post-link * {cursor:pointer}
 .post-link:focus-visible{outline:2px solid var(--gold)}
 .post {
+  display:flex;flex-direction:column;height:100%;
   overflow:hidden;border:1px solid var(--line);
   border-radius:18px;
   background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.012));
@@ -96,13 +97,13 @@ input:focus,select:focus {border-color:var(--gold)}
     padding: 16px;
   }
 }
-  .post-info {padding:19px}
+  .post-info {display:flex;flex-direction:column;flex:1;padding:19px}
 .category {
   color:var(--gold2);font-size:.7rem;font-weight:800;
   letter-spacing:.13em;text-transform:uppercase;
 }
 .post h2 {font-size:1.1rem;line-height:1.35;margin:8px 0}
-.post p {color:var(--muted);font-size:.9rem;margin:0 0 12px}
+.post p {color:var(--muted);font-size:.9rem;margin:0 0 auto}
 .date {font-size:.78rem;color:#898477}
 .empty {
   grid-column:1/-1;text-align:center;padding:45px 15px;
