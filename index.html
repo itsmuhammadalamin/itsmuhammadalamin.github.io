@@ -330,6 +330,9 @@
     }
 
     .post-card {
+      display:flex;
+      flex-direction:column;
+      height:100%;
       overflow:hidden;
       border:1px solid var(--line);
       border-radius:20px;
@@ -361,7 +364,12 @@
       background:linear-gradient(135deg,#171612,#292315);
     }
 
-    .post-info { padding:20px; }
+    .post-info {
+      display:flex;
+      flex-direction:column;
+      flex:1;
+      padding:20px;
+    }
 
     .post-category {
       display:inline-block;
@@ -382,7 +390,7 @@
     .post-info p {
       color:var(--muted);
       font-size:.9rem;
-      margin:0 0 15px;
+      margin:0 0 auto;
     }
 
     .post-date {
