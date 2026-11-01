@@ -407,6 +407,20 @@
           </div>
 
           <div class="field">
+            <label for="imageCredit">Picture Credit</label>
+            <input id="imageCredit" type="text" maxlength="180"
+              placeholder="Photographer / creator name">
+            <div class="form-note">Credit the photographer, creator or image owner.</div>
+          </div>
+
+          <div class="field">
+            <label for="imageSourceUrl">Picture Source Link</label>
+            <input id="imageSourceUrl" type="url" maxlength="1000"
+              placeholder="https://example.com/photo">
+            <div class="form-note">Optional link to the original photo or source page.</div>
+          </div>
+
+          <div class="field">
             <label for="postStatus">Publishing Status</label>
             <select id="postStatus">
               <option value="false">Save as Draft</option>
@@ -811,6 +825,8 @@
         const category = document.getElementById("postCategory").value;
         const excerpt = document.getElementById("postExcerpt").value.trim();
         const content = document.getElementById("postContent").value.trim();
+        const imageCredit = document.getElementById("imageCredit").value.trim();
+        const imageSourceUrl = document.getElementById("imageSourceUrl").value.trim();
         const published =
           document.getElementById("postStatus").value === "true";
 
@@ -830,12 +846,23 @@
 
         const imageUrl = await uploadImage(imageFile);
 
+        if (imageSourceUrl) {
+          let parsedSource;
+          try { parsedSource = new URL(imageSourceUrl); }
+          catch { throw new Error("Please enter a valid picture source URL."); }
+          if (!["http:", "https:"].includes(parsedSource.protocol)) {
+            throw new Error("Picture source link must start with http:// or https://.");
+          }
+        }
+
         const postData = {
           title,
           category,
           excerpt,
           content,
           image_url:imageUrl,
+          image_credit:imageCredit || null,
+          image_source_url:imageSourceUrl || null,
           published,
           updated_at:new Date().toISOString()
         };
@@ -897,6 +924,8 @@
         post.category || "Memories";
       document.getElementById("postExcerpt").value = post.excerpt || "";
       document.getElementById("postContent").value = post.content || "";
+      document.getElementById("imageCredit").value = post.image_credit || "";
+      document.getElementById("imageSourceUrl").value = post.image_source_url || "";
       document.getElementById("postStatus").value =
         String(!!post.published);
 
