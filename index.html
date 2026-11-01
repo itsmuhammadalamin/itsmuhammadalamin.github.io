@@ -708,7 +708,7 @@
             <p>Stories, journeys, thoughts & moments — a collection of things worth remembering.</p>
           </div>
 
-          <a class="btn" href="#chronicle">Explore my journal ↗</a>
+          <a class="btn" href="/all-posts.html">Explore all posts ↗</a>
         </div>
 
         <div class="chronicle-grid" id="chronicleGrid">
@@ -859,8 +859,8 @@
           .from("posts")
           .select("id,title,slug,category,excerpt,content,image_url,created_at")
           .eq("published", true)
-          .order("created_at", { ascending: false });
-
+.order("created_at", { ascending: false })
+.limit(3);
         if (error) throw error;
 
         if (!data || data.length === 0) {
