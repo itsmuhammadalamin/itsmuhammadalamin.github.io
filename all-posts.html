@@ -306,7 +306,7 @@ function renderPosts() {
     grid.innerHTML = '<div class="empty">No stories found.</div>';
   } else {
     grid.innerHTML = visible.map(post => `
-     <a class="post-link" href="/post.html?slug=${encodeURIComponent(post.slug)}" aria-label="Read ${escapeHTML(post.title)}">
+     <a class="post-link" href="/posts/${encodeURIComponent(post.slug)}/" aria-label="Read ${escapeHTML(post.title)}">
       <article class="post">
         ${post.image_url
           ? `<img src="${escapeHTML(post.image_url)}" alt="${escapeHTML(post.title)}" loading="lazy">`
