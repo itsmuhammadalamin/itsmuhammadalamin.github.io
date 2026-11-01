@@ -68,9 +68,15 @@ input:focus,select:focus {border-color:var(--gold)}
   object-fit:contain;
   display:block;
   background:transparent;
+  padding: 20px;
 }
 }
-.post-info {padding:19px}
+@media (max-width: 520px) {
+  .post {
+    padding: 16px;
+  }
+}
+  .post-info {padding:19px}
 .category {
   color:var(--gold2);font-size:.7rem;font-weight:800;
   letter-spacing:.13em;text-transform:uppercase;
