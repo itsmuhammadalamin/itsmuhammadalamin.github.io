@@ -1,0 +1,156 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+
+const SUPABASE_URL = "https://ahfzumcsyjwkvpgcjuuy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_l6zAy75h8KD25MuVY3gcHw_tFrCFSX3";
+const SITE = "https://itsmuhammadalamin.github.io";
+const OUT = "posts";
+
+function esc(value = "") {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+function inlineMarkdown(value) {
+  return esc(value)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+function renderMarkdown(markdown = "") {
+  const lines = String(markdown).replace(/\r/g, "").split("\n");
+  const out = [];
+  let paragraph = [];
+  let list = [];
+  const flushParagraph = () => {
+    if (paragraph.length) {
+      out.push("<p>" + inlineMarkdown(paragraph.join(" ")) + "</p>");
+      paragraph = [];
+    }
+  };
+  const flushList = () => {
+    if (list.length) {
+      out.push("<ul>" + list.map(x => "<li>" + inlineMarkdown(x) + "</li>").join("") + "</ul>");
+      list = [];
+    }
+  };
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) { flushParagraph(); flushList(); continue; }
+    const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      flushParagraph(); flushList();
+      const level = heading[1].length;
+      out.push("<h" + level + ">" + inlineMarkdown(heading[2]) + "</h" + level + ">");
+    } else if (/^[-*]\s+/.test(trimmed)) {
+      flushParagraph();
+      list.push(trimmed.replace(/^[-*]\s+/, ""));
+    } else {
+      flushList();
+      paragraph.push(trimmed);
+    }
+  }
+  flushParagraph(); flushList();
+  return out.join("\n");
+}
+function dateLabel(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString("en-US", {
+    year:"numeric", month:"long", day:"numeric", timeZone:"UTC"
+  });
+}
+function page(post) {
+  const url = SITE + "/posts/" + encodeURIComponent(post.slug) + "/";
+  const description = (post.excerpt || post.content || "A story from Muhammad Alamin's personal chronicle.")
+    .replace(/\s+/g, " ").slice(0, 155);
+  const title = post.title + " | Chronicle — Muhammad Alamin";
+  const image = post.image_url ? '<meta property="og:image" content="' + esc(post.image_url) + '">' : "";
+  const cover = post.image_url ? '<img class="cover" src="' + esc(post.image_url) + '" alt="' + esc(post.title) + '">' : "";
+  const credit = post.image_credit
+    ? '<p class="credit">Photo credit: ' + esc(post.image_credit) +
+      (post.image_source_url ? ' · <a href="' + esc(post.image_source_url) + '" target="_blank" rel="noopener noreferrer">Source</a>' : "") +
+      "</p>" : "";
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080808">
+<meta name="robots" content="index,follow">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(description)}">
+<link rel="canonical" href="${esc(url)}">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Chronicle — Muhammad Alamin">
+<meta property="og:title" content="${esc(post.title)}">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:url" content="${esc(url)}">
+${image}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(post.title)}">
+<meta name="twitter:description" content="${esc(description)}">
+<style>
+:root{--bg:#080808;--gold:#d8b45a;--gold2:#f5df9a;--muted:#b4b0a5;--white:#f7f4eb;--line:rgba(216,180,90,.22)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,rgba(216,180,90,.1),transparent 45%),var(--bg);color:var(--white);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+.wrap{width:min(820px,calc(100% - 32px));margin:auto}header{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}a{color:var(--gold2);text-decoration:none}.brand{font-weight:850;letter-spacing:.08em}.brand span{color:var(--gold)}main{padding:42px 0 70px}.category{color:var(--gold2);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.date{color:var(--muted);font-size:.85rem;margin-top:10px}h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.25;margin:12px 0}.excerpt{font-size:1.08rem;color:var(--muted);margin:20px 0 28px}.cover{width:100%;max-height:520px;object-fit:cover;border-radius:18px;border:1px solid var(--line);margin:12px 0 28px}.body{overflow-wrap:anywhere;font-size:1.04rem;color:#e0dccf}.body p{margin:0 0 1.2em}.body h2,.body h3{line-height:1.35;color:var(--gold2);margin:1.6em 0 .6em}.body ul{padding-left:1.4em}.credit{font-size:.82rem;color:var(--muted);margin-top:-18px;margin-bottom:25px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:35px;padding-top:22px;border-top:1px solid var(--line)}button{border:1px solid var(--line);border-radius:30px;padding:10px 17px;background:#171612;color:var(--gold2);font:inherit;cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.85rem}
+</style>
+<script type="application/ld+json">${JSON.stringify({
+    "@context":"https://schema.org","@type":"BlogPosting",
+    "headline":post.title,"description":description,"datePublished":post.created_at,
+    "dateModified":post.updated_at || post.created_at,"mainEntityOfPage":url,
+    "author":{"@type":"Person","name":"Muhammad Alamin","url":SITE},
+    "publisher":{"@type":"Person","name":"Muhammad Alamin"},
+    ...(post.image_url ? {"image":post.image_url} : {})
+  }).replace(/</g,"\\u003c")}</script>
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/">MA<span>.</span> CHRONICLE</a><a href="/all-posts.html">← All Posts</a></header>
+<main>
+<span class="category">${esc(post.category || "Memories")}</span>
+<h1>${esc(post.title)}</h1>
+<div class="date">${esc(dateLabel(post.created_at))}</div>
+${post.excerpt ? '<p class="excerpt">' + esc(post.excerpt) + "</p>" : ""}
+${cover}${credit}
+<article class="body">${renderMarkdown(post.content || post.excerpt || "")}</article>
+<div class="actions"><button id="share">↗ Share article</button><a href="/all-posts.html">← All Posts</a></div>
+</main>
+<footer>© <span id="year"></span> Muhammad Alamin · A Personal Chronicle</footer>
+</div>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+document.getElementById("share").addEventListener("click", async () => {
+ const data={title:${JSON.stringify(post.title)},text:${JSON.stringify(description)},url:location.href};
+ try { if(navigator.share) await navigator.share(data); else { await navigator.clipboard.writeText(location.href); alert("Link copied."); } }
+ catch(e) { if(e.name!=="AbortError") alert("Could not share: "+e.message); }
+});
+</script></body></html>`;
+}
+
+const endpoint = SUPABASE_URL + "/rest/v1/posts?select=title,slug,category,excerpt,content,image_url,image_credit,image_source_url,created_at,updated_at,published&published=eq.true&order=created_at.desc";
+const response = await fetch(endpoint, { headers: {
+  apikey: SUPABASE_KEY,
+  Authorization: "Bearer " + SUPABASE_KEY
+}});
+if (!response.ok) throw new Error("Supabase request failed: " + response.status + " " + await response.text());
+const posts = await response.json();
+await fs.mkdir(OUT, { recursive:true });
+const entries = [];
+for (const post of posts) {
+  if (!post.slug || !/^[a-z0-9-]+$/i.test(post.slug)) continue;
+  const dir = path.join(OUT, post.slug);
+  await fs.mkdir(dir, { recursive:true });
+  await fs.writeFile(path.join(dir, "index.html"), page(post), "utf8");
+  entries.push(`<url><loc>${SITE}/posts/${encodeURIComponent(post.slug)}/</loc><lastmod>${(post.updated_at || post.created_at || "").slice(0,10)}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`);
+}
+const staticUrls = [
+  `<url><loc>${SITE}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
+  `<url><loc>${SITE}/all-posts.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>`
+];
+const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  [...staticUrls, ...entries].join("\n") + '\n</urlset>\n';
+await fs.writeFile("sitemap.xml", sitemap, "utf8");
+console.log(`Generated ${entries.length} published article pages and sitemap.xml.`);
