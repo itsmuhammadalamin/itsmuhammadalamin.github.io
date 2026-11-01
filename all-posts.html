@@ -68,12 +68,18 @@ input:focus,select:focus {border-color:var(--gold)}
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:18px;
 }
-.post-link{display:block;color:inherit;text-decoration:none;border-radius:18px;outline-offset:4px}
-.post-link:hover .post{border-color:var(--gold);transform:translateY(-3px)}
+.post-link{display:block;color:inherit;text-decoration:none;border-radius:18px;outline-offset:4px;cursor:pointer}
 .post-link:focus-visible{outline:2px solid var(--gold)}
 .post {
   overflow:hidden;border:1px solid var(--line);
-  border-radius:18px;background:var(--panel);transition:transform .2s,border-color .2s;
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.012));
+  transition:transform .25s,border-color .25s;
+}
+.post-link:hover .post,
+.post-link:focus-visible .post {
+  transform:translateY(-5px);
+  border-color:rgba(216,180,90,.65);
 }
 .post img {
   width:100%;
