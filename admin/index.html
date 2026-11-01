@@ -197,6 +197,16 @@
       font-size:.85rem;
     }
 
+    .post-filters {
+      display:grid;
+      grid-template-columns:minmax(220px,2fr) minmax(150px,1fr) minmax(140px,1fr);
+      gap:10px;
+      margin:18px 0 8px;
+    }
+
+    .post-filters input,
+    .post-filters select { min-width:0; }
+
     .post-list {
       display:grid;
       gap:12px;
@@ -280,6 +290,7 @@
 
     @media(max-width:650px) {
       .stats { grid-template-columns:1fr 1fr; }
+      .post-filters { grid-template-columns:1fr; }
       .post-item { align-items:flex-start;flex-wrap:wrap; }
       .post-actions { width:100%; }
       .post-actions .btn { flex:1; }
@@ -452,6 +463,22 @@
           <button class="btn small" id="refreshButton">Refresh ↻</button>
         </div>
 
+        <div class="post-filters">
+          <input id="postSearch" type="search"
+            placeholder="Search by post title or description..."
+            aria-label="Search posts">
+          <select id="postCategoryFilter" aria-label="Filter by category">
+            <option value="all">All Categories</option>
+          </select>
+          <select id="postStatusFilter" aria-label="Filter by status">
+            <option value="all">All Statuses</option>
+            <option value="published">Published</option>
+            <option value="draft">Drafts</option>
+          </select>
+        </div>
+
+        <p id="postCount" class="form-note" aria-live="polite"></p>
+
         <div id="postList" class="post-list">
           <p class="muted">Loading posts...</p>
         </div>
@@ -503,6 +530,10 @@
     const listMessage = document.getElementById("listMessage");
 
     const postList = document.getElementById("postList");
+    const postSearch = document.getElementById("postSearch");
+    const postCategoryFilter = document.getElementById("postCategoryFilter");
+    const postStatusFilter = document.getElementById("postStatusFilter");
+    const postCount = document.getElementById("postCount");
     const imageInput = document.getElementById("postImage");
     const imagePreview = document.getElementById("imagePreview");
 
@@ -686,7 +717,25 @@
 
     function renderPosts() {
 
+      const term = postSearch.value.trim().toLowerCase();
+      const selectedCategory = postCategoryFilter.value;
+      const selectedStatus = postStatusFilter.value;
+
+      const categories = [...new Set(
+        currentPosts.map(post => post.category).filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b));
+
+      const previousCategory = selectedCategory;
+      postCategoryFilter.innerHTML =
+        '<option value="all">All Categories</option>' +
+        categories.map(name =>
+          `<option value="${escapeHTML(name)}">${escapeHTML(name)}</option>`
+        ).join("");
+      postCategoryFilter.value = categories.includes(previousCategory)
+        ? previousCategory : "all";
+
       if (currentPosts.length === 0) {
+        postCount.textContent = "0 posts";
         postList.innerHTML = `
           <div class="muted">
             No stories yet. Create your first post above.
@@ -694,7 +743,32 @@
         return;
       }
 
-      postList.innerHTML = currentPosts.map(post => {
+      const filteredPosts = currentPosts.filter(post => {
+        const searchable = [
+          post.title, post.excerpt, post.content, post.category
+        ].join(" ").toLowerCase();
+
+        const matchesSearch = searchable.includes(term);
+        const matchesCategory =
+          postCategoryFilter.value === "all" ||
+          post.category === postCategoryFilter.value;
+        const matchesStatus =
+          postStatusFilter.value === "all" ||
+          (postStatusFilter.value === "published" && post.published) ||
+          (postStatusFilter.value === "draft" && !post.published);
+
+        return matchesSearch && matchesCategory && matchesStatus;
+      });
+
+      postCount.textContent =
+        `Showing ${filteredPosts.length} of ${currentPosts.length} posts`;
+
+      if (filteredPosts.length === 0) {
+        postList.innerHTML = '<div class="muted">No matching posts found. Try another search or filter.</div>';
+        return;
+      }
+
+      postList.innerHTML = filteredPosts.map(post => {
 
         const image = post.image_url
           ? `<img class="post-thumb" src="${escapeHTML(post.image_url)}" alt="">`
@@ -1033,6 +1107,10 @@
         resetForm();
         showMessage(formMessage, "Edit cancelled.");
       });
+
+    postSearch.addEventListener("input", renderPosts);
+    postCategoryFilter.addEventListener("change", renderPosts);
+    postStatusFilter.addEventListener("change", renderPosts);
 
     document.getElementById("refreshButton")
       .addEventListener("click", loadPosts);
