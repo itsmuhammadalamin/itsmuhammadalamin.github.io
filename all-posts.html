@@ -63,7 +63,12 @@ input:focus,select:focus {border-color:var(--gold)}
   border-radius:18px;background:var(--panel);
 }
 .post img {
-  width:100%;height:220px;object-fit:cover;display:block;
+  width:100%;
+  height:240px;
+  object-fit:contain;
+  display:block;
+  background:transparent;
+}
 }
 .post-info {padding:19px}
 .category {
@@ -99,6 +104,61 @@ footer {
   .wrap {width:calc(100% - 28px)}
   .grid {grid-template-columns:1fr}
   .post img {height:230px}
+}
+
+.reader {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  padding:20px;
+  background:rgba(0,0,0,.94);
+  overflow-y:auto;
+}
+.reader.active {
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+.reader-content {
+  position:relative;
+  width:min(760px,100%);
+  margin:35px auto;
+  padding:28px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:#11110f;
+}
+.reader-close {
+  position:absolute;
+  top:14px;
+  right:14px;
+  width:38px;
+  height:38px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  color:var(--gold2);
+  background:#171612;
+  cursor:pointer;
+  font-size:1.2rem;
+}
+#readerTitle {padding-right:30px}
+#readerImage {
+  width:100%;
+  height:auto;
+  max-height:70vh;
+  object-fit:contain;
+  border-radius:14px;
+  margin:22px 0;
+}
+#readerBody {
+  color:#d0cabb;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  line-height:1.85;
+}
+@media(max-width:520px) {
+  .reader-content {padding:20px}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -137,6 +197,17 @@ footer {
     <span id="pageInfo">Page 1</span>
     <button id="next" disabled>Next →</button>
   </div>
+
+<div class="reader" id="reader">
+  <article class="reader-content">
+    <button class="reader-close" id="readerClose">×</button>
+    <span class="category" id="readerCategory"></span>
+    <h2 id="readerTitle"></h2>
+    <div class="date" id="readerDate"></div>
+    <img id="readerImage" alt="" hidden>
+    <div id="readerBody"></div>
+  </article>
+</div>
 </main>
 
 <footer>© <span id="year"></span> Muhammad Alamin</footer>
@@ -199,7 +270,9 @@ function renderPosts() {
     grid.innerHTML = '<div class="empty">No stories found.</div>';
   } else {
     grid.innerHTML = visible.map(post => `
-      <a class="post" href="/#chronicle" aria-label="View ${escapeHTML(post.title)}">
+     <article class="post" tabindex="0" role="button"
+  data-post-id="${escapeHTML(post.id)}"
+  aria-label="Read ${escapeHTML(post.title)}">
         ${post.image_url
           ? `<img src="${escapeHTML(post.image_url)}" alt="${escapeHTML(post.title)}" loading="lazy">`
           : ""}
@@ -209,7 +282,7 @@ function renderPosts() {
           <p>${escapeHTML(post.excerpt || "")}</p>
           <span class="date">${escapeHTML(formatDate(post.created_at))}</span>
         </div>
-      </a>
+      </article>
     `).join("");
   }
 
@@ -217,12 +290,74 @@ function renderPosts() {
   prev.disabled = currentPage <= 1;
   next.disabled = currentPage >= totalPages;
 }
+  
+function openReader(postId) {
+  const post = allPosts.find(item => item.id === postId);
+  if (!post) return;
+
+  document.getElementById("readerCategory").textContent =
+    post.category || "Memories";
+
+  document.getElementById("readerTitle").textContent =
+    post.title || "";
+
+  document.getElementById("readerDate").textContent =
+    formatDate(post.created_at);
+
+  document.getElementById("readerBody").textContent =
+    post.content || post.excerpt || "";
+
+  const image = document.getElementById("readerImage");
+
+  if (post.image_url) {
+    image.src = post.image_url;
+    image.alt = post.title || "Journal photo";
+    image.hidden = false;
+  } else {
+    image.hidden = true;
+    image.removeAttribute("src");
+  }
+
+  document.getElementById("reader").classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeReader() {
+  document.getElementById("reader").classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+grid.addEventListener("click", event => {
+  const post = event.target.closest(".post");
+  if (post) openReader(post.dataset.postId);
+});
+
+grid.addEventListener("keydown", event => {
+  const post = event.target.closest(".post");
+  if (post && (event.key === "Enter" || event.key === " ")) {
+    event.preventDefault();
+    openReader(post.dataset.postId);
+  }
+});
+
+document.getElementById("readerClose")
+  .addEventListener("click", closeReader);
+
+document.getElementById("reader")
+  .addEventListener("click", event => {
+    if (event.target.id === "reader") closeReader();
+  });
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeReader();
+});
+
 
 async function loadPosts() {
   try {
     const {data,error} = await client
       .from("posts")
-      .select("id,title,slug,category,excerpt,image_url,created_at")
+      .select("id,title,slug,category,excerpt,content,image_url,created_at")
       .eq("published",true)
       .order("created_at",{ascending:false});
 
