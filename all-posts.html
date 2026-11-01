@@ -383,14 +383,14 @@ grid.addEventListener("click", event => {
   if (link) return;
   const postCard = event.target.closest(".post");
   if (!postCard) return;
-  openReader(postCard.getAttribute("data-post-id"));
+  window.location.href = postCard.querySelector(".read-more")?.href || "/";
 });
 
 grid.addEventListener("keydown", event => {
   const post = event.target.closest(".post");
   if (post && (event.key === "Enter" || event.key === " ")) {
     event.preventDefault();
-    openReader(post.dataset.postId);
+    window.location.href = post.querySelector(".read-more")?.href || "/";
   }
 });
 
