@@ -23,12 +23,35 @@ img{width:100%;max-height:480px;object-fit:contain;border-radius:16px;margin:28p
 .excerpt{font-size:19px;color:#e4d8b8;border-left:3px solid var(--gold);padding-left:18px;margin:28px 0}
 .content{white-space:pre-wrap;overflow-wrap:anywhere;color:#ddd6c7}.content p{margin:0 0 1.3em}
 footer{border-top:1px solid #3b321e;padding:22px 0;color:var(--muted);font-size:14px}
+
+.share-row{margin:18px 0 28px}.share-btn{display:inline-flex;align-items:center;gap:9px;padding:10px 17px;border:1px solid #80652d;border-radius:999px;background:#17140d;color:var(--gold2);font:600 14px system-ui;cursor:pointer;transition:.2s}.share-btn:hover{background:#292111;border-color:var(--gold)}.share-btn:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
 </style>
 </head>
 <body><div class="wrap"><header><a class="brand" href="/">MA<span>.</span></a><a href="/all-posts.html">View all posts ↗</a></header>
 <main><article><div class="category">Travel</div><h1>The Joy of Exploring</h1>
 <div class="meta">লেখক: Muhammad Alamin · ১ নভেম্বর, ২০২৬</div>
+<div class="share-row"><button class="share-btn" id="shareArticle" type="button" aria-label="Share this article">↗ <span>Share article</span></button></div>
 <img src="https://ahfzumcsyjwkvpgcjuuy.supabase.co/storage/v1/object/public/chronicle-images/ceb296c1-9371-442b-8278-e3730ee32905.jpg" alt="The Joy of Exploring" fetchpriority="high">
 <p class="excerpt">A love for travelling, discovering new places, experiencing different cultures, and collecting moments along the way.</p>
 <div class="content"><p>There is something special about exploring the world beyond the familiar.</p><p>I love the idea of travelling to new places, discovering hidden corners, experiencing different cultures, and seeing life from different perspectives. Every journey has something new to teach, and every destination holds a story waiting to be discovered.</p><p>For me, travelling is not just about visiting beautiful places. It is about the experiences, the people, the unexpected moments, and the memories that stay with us long after the journey ends.</p><p>I dream of exploring more of the world, capturing beautiful moments through photography, trying new things, and stepping outside my comfort zone.</p><p>From peaceful natural landscapes to busy city streets, from historical places to unfamiliar cultures — there is always something worth discovering.</p><p>The world is full of stories, and I hope to experience as many of them as I can.</p><p>Not just travelling. Exploring life, one journey at a time.</p></div>
-</article></main><footer>© 2026 Muhammad Alamin · Chronicle</footer></div></body></html>
+</article></main><footer>© 2026 Muhammad Alamin · Chronicle</footer></div><script>
+(function(){
+  const button=document.getElementById("shareArticle");
+  if(!button) return;
+  button.addEventListener("click",async function(){
+    const shareData={title:document.title,text:document.querySelector(".excerpt")?.textContent||document.title,url:window.location.href};
+    try{
+      if(navigator.share){await navigator.share(shareData);}
+      else if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(shareData.url);
+        button.querySelector("span").textContent="Link copied!";
+        setTimeout(()=>button.querySelector("span").textContent="Share article",2200);
+      }else{
+        window.prompt("Copy this article link:",shareData.url);
+      }
+    }catch(error){
+      if(error.name!=="AbortError") window.prompt("Copy this article link:",shareData.url);
+    }
+  });
+})();
+</script></body></html>
