@@ -1,0 +1,1020 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <title>Chronicle Admin | Muhammad Alamin</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg:#080808;
+      --panel:#11110f;
+      --gold:#d8b45a;
+      --gold2:#f5df9a;
+      --muted:#aaa597;
+      --white:#f7f4eb;
+      --line:rgba(216,180,90,.22);
+      --red:#e47777;
+      --green:#8ec99b;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      background:radial-gradient(ellipse at 50% -20%,rgba(216,180,90,.12),transparent 45%),var(--bg);
+      color:var(--white);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+      line-height:1.6;
+    }
+
+    button,input,textarea,select { font:inherit; }
+
+    button { cursor:pointer; }
+
+    .wrap {
+      width:min(1050px,calc(100% - 32px));
+      margin:auto;
+    }
+
+    header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+      padding:22px 0;
+      border-bottom:1px solid var(--line);
+    }
+
+    .brand {
+      font-size:1.1rem;
+      font-weight:850;
+      letter-spacing:.08em;
+    }
+
+    .brand span { color:var(--gold); }
+
+    a { color:var(--gold2);text-decoration:none; }
+
+    .muted { color:var(--muted); }
+
+    .panel {
+      background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:25px;
+      margin:25px 0;
+    }
+
+    h1,h2,h3 { line-height:1.2; }
+
+    h1 { font-size:clamp(1.8rem,5vw,2.5rem);margin:0 0 8px; }
+    h2 { font-size:1.3rem;margin:0 0 18px; }
+    .gold { color:var(--gold); }
+
+    .field { margin-bottom:17px; }
+
+    label {
+      display:block;
+      color:var(--gold2);
+      font-size:.87rem;
+      font-weight:700;
+      margin-bottom:7px;
+    }
+
+    input,textarea,select {
+      width:100%;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      outline:none;
+      color:var(--white);
+      background:#0b0b09;
+    }
+
+    input:focus,textarea:focus,select:focus {
+      border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(216,180,90,.08);
+    }
+
+    textarea {
+      min-height:145px;
+      resize:vertical;
+    }
+
+    select option { background:#11110f; }
+
+    .btn {
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:11px 18px;
+      color:var(--gold2);
+      background:#171612;
+      font-weight:750;
+      transition:.2s;
+    }
+
+    .btn:hover {
+      border-color:var(--gold);
+      transform:translateY(-2px);
+    }
+
+    .btn.primary {
+      background:linear-gradient(120deg,var(--gold),var(--gold2));
+      color:#17130a;
+      border-color:transparent;
+    }
+
+    .btn.danger {
+      color:#ffaaaa;
+      border-color:rgba(228,119,119,.35);
+    }
+
+    .btn.small {
+      padding:7px 12px;
+      font-size:.8rem;
+    }
+
+    .actions {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .hidden { display:none !important; }
+
+    .login-box {
+      max-width:430px;
+      margin:75px auto;
+    }
+
+    .login-box .panel { padding:30px; }
+
+    .message {
+      margin-top:14px;
+      color:var(--gold2);
+      font-size:.9rem;
+      overflow-wrap:anywhere;
+    }
+
+    .message.error { color:var(--red); }
+
+    .topbar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+      flex-wrap:wrap;
+    }
+
+    .stats {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:20px;
+    }
+
+    .stat {
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:rgba(216,180,90,.035);
+    }
+
+    .stat strong {
+      display:block;
+      color:var(--gold2);
+      font-size:1.7rem;
+    }
+
+    .stat span {
+      color:var(--muted);
+      font-size:.85rem;
+    }
+
+    .post-list {
+      display:grid;
+      gap:12px;
+    }
+
+    .post-item {
+      display:flex;
+      align-items:center;
+      gap:15px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(0,0,0,.2);
+    }
+
+    .post-thumb {
+      width:75px;
+      height:70px;
+      flex-shrink:0;
+      object-fit:cover;
+      border-radius:10px;
+      background:#252116;
+    }
+
+    .post-details { flex:1;min-width:0; }
+
+    .post-details h3 {
+      font-size:1rem;
+      margin:0 0 5px;
+      overflow-wrap:anywhere;
+    }
+
+    .post-details p {
+      margin:0;
+      color:var(--muted);
+      font-size:.8rem;
+    }
+
+    .status {
+      display:inline-block;
+      font-size:.72rem;
+      font-weight:800;
+      padding:3px 9px;
+      border-radius:30px;
+      margin-top:5px;
+    }
+
+    .status.published {
+      color:var(--green);
+      background:rgba(142,201,155,.1);
+    }
+
+    .status.draft {
+      color:var(--gold2);
+      background:rgba(216,180,90,.1);
+    }
+
+    .preview {
+      max-width:220px;
+      max-height:160px;
+      display:block;
+      object-fit:cover;
+      border-radius:12px;
+      margin-top:10px;
+    }
+
+    .form-note {
+      color:var(--muted);
+      font-size:.8rem;
+      margin-top:5px;
+    }
+
+    footer {
+      text-align:center;
+      color:var(--muted);
+      font-size:.8rem;
+      padding:25px 0;
+      border-top:1px solid var(--line);
+      margin-top:40px;
+    }
+
+    @media(max-width:650px) {
+      .stats { grid-template-columns:1fr 1fr; }
+      .post-item { align-items:flex-start;flex-wrap:wrap; }
+      .post-actions { width:100%; }
+      .post-actions .btn { flex:1; }
+      .panel { padding:19px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header>
+      <a class="brand" href="/">MA<span>.</span> CHRONICLE</a>
+      <a href="/" target="_blank">View Website ↗</a>
+    </header>
+
+    <!-- LOGIN -->
+
+    <section id="loginSection" class="login-box">
+      <div class="panel">
+        <p class="gold">PRIVATE ADMIN ACCESS</p>
+        <h1>Welcome <span class="gold">back.</span></h1>
+        <p class="muted">Sign in to manage your personal chronicle.</p>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input id="email" type="email"
+              placeholder="Your admin email" required autocomplete="username">
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password"
+              placeholder="Your password" required autocomplete="current-password">
+          </div>
+
+          <button class="btn primary" type="submit" id="loginButton">
+            Sign In →
+          </button>
+        </form>
+
+        <div id="loginMessage" class="message" role="status"></div>
+      </div>
+    </section>
+
+
+    <!-- DASHBOARD -->
+
+    <main id="dashboard" class="hidden">
+
+      <section class="panel">
+        <div class="topbar">
+          <div>
+            <p class="gold">ADMIN DASHBOARD</p>
+            <h1>Your <span class="gold">Chronicle.</span></h1>
+            <p class="muted">Manage your stories, journeys and moments.</p>
+          </div>
+
+          <button class="btn danger" id="logoutButton">Logout ↗</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <strong id="totalPosts">0</strong>
+            <span>Total Posts</span>
+          </div>
+          <div class="stat">
+            <strong id="publishedPosts">0</strong>
+            <span>Published</span>
+          </div>
+          <div class="stat">
+            <strong id="draftPosts">0</strong>
+            <span>Drafts</span>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- POST FORM -->
+
+      <section class="panel" id="editorPanel">
+        <h2 id="editorTitle">✦ Create a New Story</h2>
+
+        <form id="postForm">
+
+          <div class="field">
+            <label for="postTitle">Post Title *</label>
+            <input id="postTitle" type="text"
+              maxlength="150" placeholder="Give your story a title..." required>
+          </div>
+
+          <div class="field">
+            <label for="postCategory">Category *</label>
+            <select id="postCategory" required>
+              <option value="Memories">Memories</option>
+              <option value="Travel">Travel</option>
+              <option value="Photography">Photography</option>
+              <option value="Writing">Writing</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="postExcerpt">Short Description</label>
+            <textarea id="postExcerpt" maxlength="350"
+              placeholder="Write a short introduction..."></textarea>
+            <div class="form-note">Maximum 350 characters.</div>
+          </div>
+
+          <div class="field">
+            <label for="postContent">Full Story</label>
+            <textarea id="postContent"
+              placeholder="Write your complete story here..."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="postImage">Upload Photo</label>
+            <input id="postImage" type="file"
+              accept="image/jpeg,image/png,image/webp">
+            <div class="form-note">
+              JPG, PNG or WebP. Maximum file size: 5 MB.
+            </div>
+            <img id="imagePreview" class="preview hidden" alt="Image preview">
+            <div id="imageMessage" class="form-note"></div>
+          </div>
+
+          <div class="field">
+            <label for="postStatus">Publishing Status</label>
+            <select id="postStatus">
+              <option value="false">Save as Draft</option>
+              <option value="true">Publish Now</option>
+            </select>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" type="submit" id="saveButton">
+              Save Post
+            </button>
+
+            <button class="btn hidden" type="button" id="cancelEditButton">
+              Cancel Edit
+            </button>
+          </div>
+
+          <div id="formMessage" class="message" role="status"></div>
+
+        </form>
+      </section>
+
+
+      <!-- POSTS -->
+
+      <section class="panel">
+        <div class="topbar">
+          <h2>✦ Your Stories</h2>
+          <button class="btn small" id="refreshButton">Refresh ↻</button>
+        </div>
+
+        <div id="postList" class="post-list">
+          <p class="muted">Loading posts...</p>
+        </div>
+
+        <div id="listMessage" class="message"></div>
+      </section>
+
+    </main>
+
+    <footer>
+      Muhammad Alamin · A Personal Chronicle · Private Admin Panel
+    </footer>
+
+  </div>
+
+
+  <script>
+    // =========================================
+    // SUPABASE CONFIGURATION
+    // =========================================
+
+    const SUPABASE_URL = "https://ahfzumcsyjwkvpgcjuuy.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_l6zAy75h8KD25MuVY3gcHw_tFrCFSX3";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const BUCKET = "chronicle-images";
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
+    let currentPosts = [];
+    let editingPostId = null;
+    let existingImageUrl = null;
+
+
+    // =========================================
+    // ELEMENTS
+    // =========================================
+
+    const loginSection = document.getElementById("loginSection");
+    const dashboard = document.getElementById("dashboard");
+    const loginForm = document.getElementById("loginForm");
+    const postForm = document.getElementById("postForm");
+
+    const loginMessage = document.getElementById("loginMessage");
+    const formMessage = document.getElementById("formMessage");
+    const listMessage = document.getElementById("listMessage");
+
+    const postList = document.getElementById("postList");
+    const imageInput = document.getElementById("postImage");
+    const imagePreview = document.getElementById("imagePreview");
+
+
+    // =========================================
+    // HELPERS
+    // =========================================
+
+    function showMessage(element, message, isError = false) {
+      element.textContent = message;
+      element.classList.toggle("error", isError);
+    }
+
+    function setBusy(button, busy, busyText, normalText) {
+      button.disabled = busy;
+      button.textContent = busy ? busyText : normalText;
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function formatDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+
+      return date.toLocaleDateString("en-US", {
+        year:"numeric",
+        month:"short",
+        day:"numeric"
+      });
+    }
+
+    function makeSlug(title) {
+      const base = title
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")
+        .slice(0, 70);
+
+      return (base || "story") + "-" + crypto.randomUUID().slice(0, 8);
+    }
+
+
+    // =========================================
+    // AUTHENTICATION
+    // =========================================
+
+    async function checkSession() {
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error) {
+        showMessage(loginMessage, error.message, true);
+        return;
+      }
+
+      if (data.session) {
+        await verifyAdmin();
+      } else {
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      loginSection.classList.remove("hidden");
+      dashboard.classList.add("hidden");
+    }
+
+    async function verifyAdmin() {
+      const { data: { user }, error } =
+        await supabaseClient.auth.getUser();
+
+      if (error || !user) {
+        showLogin();
+        return;
+      }
+
+      // This query must succeed only for an authorized admin.
+      // The database policies control access to the posts table.
+      const { error: permissionError } = await supabaseClient
+        .from("posts")
+        .select("id")
+        .limit(1);
+
+      if (permissionError) {
+        await supabaseClient.auth.signOut();
+        showLogin();
+        showMessage(
+          loginMessage,
+          "This account does not have Admin access.",
+          true
+        );
+        return;
+      }
+
+      loginSection.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+
+      await loadPosts();
+    }
+
+    loginForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const button = document.getElementById("loginButton");
+
+      setBusy(button, true, "Signing in...", "Sign In →");
+      showMessage(loginMessage, "");
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      setBusy(button, false, false, "Sign In →");
+
+      if (error) {
+        showMessage(loginMessage, error.message, true);
+        return;
+      }
+
+      await verifyAdmin();
+    });
+
+    document.getElementById("logoutButton")
+      .addEventListener("click", async () => {
+        await supabaseClient.auth.signOut();
+        location.reload();
+      });
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        showLogin();
+      }
+    });
+
+
+    // =========================================
+    // LOAD POSTS
+    // =========================================
+
+    async function loadPosts() {
+      postList.innerHTML = '<p class="muted">Loading posts...</p>';
+      showMessage(listMessage, "");
+
+      const { data, error } = await supabaseClient
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending:false });
+
+      if (error) {
+        postList.textContent = "Unable to load posts: " + error.message;
+        return;
+      }
+
+      currentPosts = data || [];
+
+      document.getElementById("totalPosts").textContent =
+        currentPosts.length;
+
+      document.getElementById("publishedPosts").textContent =
+        currentPosts.filter(post => post.published).length;
+
+      document.getElementById("draftPosts").textContent =
+        currentPosts.filter(post => !post.published).length;
+
+      renderPosts();
+    }
+
+    function renderPosts() {
+
+      if (currentPosts.length === 0) {
+        postList.innerHTML = `
+          <div class="muted">
+            No stories yet. Create your first post above.
+          </div>`;
+        return;
+      }
+
+      postList.innerHTML = currentPosts.map(post => {
+
+        const image = post.image_url
+          ? `<img class="post-thumb" src="${escapeHTML(post.image_url)}" alt="">`
+          : `<div class="post-thumb"></div>`;
+
+        return `
+          <article class="post-item">
+            ${image}
+
+            <div class="post-details">
+              <h3>${escapeHTML(post.title)}</h3>
+              <p>${escapeHTML(post.category)} · ${formatDate(post.created_at)}</p>
+              <span class="status ${post.published ? "published" : "draft"}">
+                ${post.published ? "PUBLISHED" : "DRAFT"}
+              </span>
+            </div>
+
+            <div class="actions post-actions">
+              <button class="btn small" data-action="edit"
+                data-id="${escapeHTML(post.id)}">Edit</button>
+
+              <button class="btn small danger" data-action="delete"
+                data-id="${escapeHTML(post.id)}">Delete</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+
+    // =========================================
+    // IMAGE PREVIEW
+    // =========================================
+
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files[0];
+
+      document.getElementById("imageMessage").textContent = "";
+
+      if (!file) {
+        imagePreview.classList.add("hidden");
+        imagePreview.removeAttribute("src");
+        return;
+      }
+
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        imageInput.value = "";
+        showMessage(
+          document.getElementById("imageMessage"),
+          "Only JPG, PNG or WebP images are allowed.",
+          true
+        );
+        return;
+      }
+
+      if (file.size > MAX_IMAGE_SIZE) {
+        imageInput.value = "";
+        showMessage(
+          document.getElementById("imageMessage"),
+          "Image must be smaller than 5 MB.",
+          true
+        );
+        return;
+      }
+
+      imagePreview.src = URL.createObjectURL(file);
+      imagePreview.classList.remove("hidden");
+    });
+
+
+    // =========================================
+    // IMAGE UPLOAD
+    // =========================================
+
+    async function uploadImage(file) {
+
+      if (!file) return existingImageUrl;
+
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        throw new Error("Invalid image format.");
+      }
+
+      if (file.size > MAX_IMAGE_SIZE) {
+        throw new Error("Image must be smaller than 5 MB.");
+      }
+
+      const extension = ({
+        "image/jpeg":"jpg",
+        "image/png":"png",
+        "image/webp":"webp"
+      })[file.type];
+
+      const path = `${crypto.randomUUID()}.${extension}`;
+
+      const { error } = await supabaseClient.storage
+        .from(BUCKET)
+        .upload(path, file, {
+          cacheControl:"3600",
+          upsert:false,
+          contentType:file.type
+        });
+
+      if (error) throw error;
+
+      const { data } = supabaseClient.storage
+        .from(BUCKET)
+        .getPublicUrl(path);
+
+      return data.publicUrl;
+    }
+
+
+    // =========================================
+    // SAVE / UPDATE POST
+    // =========================================
+
+    postForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const button = document.getElementById("saveButton");
+
+      setBusy(button, true, "Saving...", "Save Post");
+      showMessage(formMessage, "");
+
+      try {
+
+        const title = document.getElementById("postTitle").value.trim();
+        const category = document.getElementById("postCategory").value;
+        const excerpt = document.getElementById("postExcerpt").value.trim();
+        const content = document.getElementById("postContent").value.trim();
+        const published =
+          document.getElementById("postStatus").value === "true";
+
+        const imageFile = imageInput.files[0];
+
+        if (!title) throw new Error("Please enter a post title.");
+
+        if (imageFile) {
+          if (!["image/jpeg", "image/png", "image/webp"].includes(imageFile.type)) {
+            throw new Error("Only JPG, PNG or WebP images are allowed.");
+          }
+
+          if (imageFile.size > MAX_IMAGE_SIZE) {
+            throw new Error("Image must be smaller than 5 MB.");
+          }
+        }
+
+        const imageUrl = await uploadImage(imageFile);
+
+        const postData = {
+          title,
+          category,
+          excerpt,
+          content,
+          image_url:imageUrl,
+          published,
+          updated_at:new Date().toISOString()
+        };
+
+        if (editingPostId) {
+
+          const { error } = await supabaseClient
+            .from("posts")
+            .update(postData)
+            .eq("id", editingPostId);
+
+          if (error) throw error;
+
+          showMessage(formMessage, "Post updated successfully.");
+
+        } else {
+
+          postData.slug = makeSlug(title);
+
+          const { error } = await supabaseClient
+            .from("posts")
+            .insert(postData);
+
+          if (error) throw error;
+
+          showMessage(formMessage, "New post saved successfully.");
+        }
+
+        resetForm();
+        await loadPosts();
+
+      } catch (error) {
+
+        showMessage(formMessage, error.message || "Something went wrong.", true);
+
+      } finally {
+
+        setBusy(button, false, false, "Save Post");
+        button.textContent = editingPostId ? "Update Post" : "Save Post";
+
+      }
+    });
+
+
+    // =========================================
+    // EDIT POST
+    // =========================================
+
+    function editPost(id) {
+
+      const post = currentPosts.find(item => item.id === id);
+      if (!post) return;
+
+      editingPostId = id;
+      existingImageUrl = post.image_url || null;
+
+      document.getElementById("postTitle").value = post.title || "";
+      document.getElementById("postCategory").value =
+        post.category || "Memories";
+      document.getElementById("postExcerpt").value = post.excerpt || "";
+      document.getElementById("postContent").value = post.content || "";
+      document.getElementById("postStatus").value =
+        String(!!post.published);
+
+      imageInput.value = "";
+
+      if (existingImageUrl) {
+        imagePreview.src = existingImageUrl;
+        imagePreview.classList.remove("hidden");
+      } else {
+        imagePreview.classList.add("hidden");
+      }
+
+      document.getElementById("editorTitle").textContent = "✦ Edit Story";
+      document.getElementById("saveButton").textContent = "Update Post";
+      document.getElementById("cancelEditButton").classList.remove("hidden");
+
+      showMessage(formMessage, "Editing: " + post.title);
+
+      document.getElementById("editorPanel")
+        .scrollIntoView({ behavior:"smooth" });
+    }
+
+
+    // =========================================
+    // DELETE POST
+    // =========================================
+
+    async function deletePost(id) {
+
+      const post = currentPosts.find(item => item.id === id);
+      if (!post) return;
+
+      const confirmed = confirm(
+        `Delete "${post.title}" permanently? This cannot be undone.`
+      );
+
+      if (!confirmed) return;
+
+      const { error } = await supabaseClient
+        .from("posts")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        showMessage(listMessage, error.message, true);
+        return;
+      }
+
+      if (editingPostId === id) resetForm();
+
+      showMessage(listMessage, "Post deleted successfully.");
+      await loadPosts();
+    }
+
+
+    // =========================================
+    // POST ACTIONS
+    // =========================================
+
+    postList.addEventListener("click", event => {
+
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const id = button.dataset.id;
+
+      if (button.dataset.action === "edit") {
+        editPost(id);
+      }
+
+      if (button.dataset.action === "delete") {
+        deletePost(id);
+      }
+    });
+
+
+    // =========================================
+    // RESET FORM
+    // =========================================
+
+    function resetForm() {
+
+      editingPostId = null;
+      existingImageUrl = null;
+
+      postForm.reset();
+
+      imagePreview.classList.add("hidden");
+      imagePreview.removeAttribute("src");
+
+      document.getElementById("editorTitle").textContent =
+        "✦ Create a New Story";
+
+      document.getElementById("saveButton").textContent =
+        "Save Post";
+
+      document.getElementById("cancelEditButton")
+        .classList.add("hidden");
+
+      document.getElementById("imageMessage").textContent = "";
+    }
+
+    document.getElementById("cancelEditButton")
+      .addEventListener("click", () => {
+        resetForm();
+        showMessage(formMessage, "Edit cancelled.");
+      });
+
+    document.getElementById("refreshButton")
+      .addEventListener("click", loadPosts);
+
+
+    // =========================================
+    // START
+    // =========================================
+
+    checkSession();
+
+  </script>
+</body>
+</html>
