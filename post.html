@@ -87,7 +87,7 @@ async function load(){
    ${data.image_url?`<img class="cover" src="${esc(data.image_url)}" alt="${esc(data.title)}">`:""}
    ${data.image_credit?`<p class="credit">ছবির কৃতিত্ব: ${esc(data.image_credit)} ${data.image_source_url?`· <a href="${esc(data.image_source_url)}" target="_blank" rel="noopener">সূত্র</a>`:""}</p>`:""}
    <div class="body">${window.DOMPurify ? DOMPurify.sanitize(data.content||data.excerpt||"", {USE_PROFILES:{html:true}}) : esc(data.content||data.excerpt||"")}</div>
-   <div class="actions"><button id="share">↗ শেয়ার করুন</button><a href="/all-posts.html">← সব লেখা</a></div>`;
+   <div class="actions"><button id="share">↗ শেয়ার করুন</button></div>`;
   document.getElementById("share").addEventListener("click",async()=>{
    const shareData={title:data.title,text:data.excerpt||data.title,url};
    try{if(navigator.share)await navigator.share(shareData);else{await navigator.clipboard.writeText(url);alert("লিংক কপি হয়েছে।");}}
