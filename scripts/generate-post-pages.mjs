@@ -107,7 +107,7 @@ ${image}
 <style>
 :root{--bg:#080808;--gold:#d8b45a;--gold2:#f5df9a;--muted:#b4b0a5;--white:#f7f4eb;--line:rgba(216,180,90,.22)}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,rgba(216,180,90,.1),transparent 45%),var(--bg);color:var(--white);font-family:Inter,system-ui,sans-serif;line-height:1.8}
-.wrap{width:min(820px,calc(100% - 32px));margin:auto}header{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}a{color:var(--gold2);text-decoration:none}.brand{font-weight:850;letter-spacing:.08em}.brand span{color:var(--gold)}main{padding:42px 0 70px}.category{color:var(--gold2);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.date{color:var(--muted);font-size:.85rem;margin-top:10px}h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.25;margin:12px 0}.excerpt{font-size:1.08rem;color:var(--muted);margin:20px 0 28px}.cover{width:100%;max-height:520px;object-fit:cover;border-radius:18px;border:1px solid var(--line);margin:12px 0 28px}.body{overflow-wrap:anywhere;font-size:1.04rem;color:#e0dccf}.body p{margin:0 0 1.2em}.body h2,.body h3{line-height:1.35;color:var(--gold2);margin:1.6em 0 .6em}.body ul{padding-left:1.4em}.credit{font-size:.82rem;color:var(--muted);margin-top:-18px;margin-bottom:25px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:35px;padding-top:22px;border-top:1px solid var(--line)}button{border:1px solid var(--line);border-radius:30px;padding:10px 17px;background:#171612;color:var(--gold2);font:inherit;cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.85rem}
+.wrap{width:min(1120px,calc(100% - 32px));margin:auto}.layout{display:grid;grid-template-columns:250px minmax(0,820px);gap:38px;align-items:start;justify-content:center}.popular{position:sticky;top:22px;margin:42px 0 70px;padding:20px;border:1px solid var(--line);border-radius:16px;background:rgba(17,17,15,.88)}.popular h2{font-size:1.05rem;color:var(--gold2);margin:0 0 14px}.popular-group{margin:0 0 18px}.popular-category{font-size:.68rem;letter-spacing:.13em;color:var(--gold);font-weight:800;text-transform:uppercase;margin-bottom:7px}.popular a{display:block;color:#e8e2d4;font-size:.88rem;line-height:1.45;padding:7px 0;border-top:1px solid rgba(216,180,90,.1)}.popular-empty{font-size:.85rem;color:var(--muted)}@media(max-width:800px){.layout{grid-template-columns:1fr;gap:0}.popular{position:static;order:2;margin:0 0 35px}main{order:1}}header{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}a{color:var(--gold2);text-decoration:none}.brand{font-weight:850;letter-spacing:.08em}.brand span{color:var(--gold)}main{padding:42px 0 70px}.category{color:var(--gold2);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.date{color:var(--muted);font-size:.85rem;margin-top:10px}h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.25;margin:12px 0}.excerpt{font-size:1.08rem;color:var(--muted);margin:20px 0 28px}.cover{width:100%;max-height:520px;object-fit:cover;border-radius:18px;border:1px solid var(--line);margin:12px 0 28px}.body{overflow-wrap:anywhere;font-size:1.04rem;color:#e0dccf}.body p{margin:0 0 1.2em}.body h2,.body h3{line-height:1.35;color:var(--gold2);margin:1.6em 0 .6em}.body ul{padding-left:1.4em}.credit{font-size:.82rem;color:var(--muted);margin-top:-18px;margin-bottom:25px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:35px;padding-top:22px;border-top:1px solid var(--line)}button{border:1px solid var(--line);border-radius:30px;padding:10px 17px;background:#171612;color:var(--gold2);font:inherit;cursor:pointer}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.85rem}
 </style>
 <script type="application/ld+json">${JSON.stringify({
     "@context":"https://schema.org","@type":"BlogPosting",
@@ -132,6 +132,22 @@ ${cover}${credit}
 <footer>© <span id="year"></span> Muhammad Alamin · A Personal Chronicle</footer>
 </div>
 <script>
+const SUPABASE_URL = "https://ahfzumcsyjwkvpgcjuuy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_l6zAy75h8KD25MuVY3gcHw_tFrCFSX3";
+const currentSlug = ${JSON.stringify(post.slug)};
+(async function loadPopular(){
+ const box=document.getElementById("popularSidebar");
+ try {
+  const headers={apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY};
+  const endpoint=SUPABASE_URL+"/rest/v1/posts?select=title,slug,category,view_count,created_at&published=eq.true&order=view_count.desc,created_at.desc&limit=30";
+  const response=await fetch(endpoint,{headers}); if(!response.ok) throw new Error("Popular posts request failed");
+  const posts=await response.json(); const groups=new Map();
+  posts.filter(p=>p.slug!==currentSlug).forEach(p=>{const key=p.category||"Other";if(!groups.has(key))groups.set(key,[]);if(groups.get(key).length<3)groups.get(key).push(p);});
+  const chosen=[...groups.entries()].filter(([,items])=>items.length).slice(0,5);
+  const safe=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  box.innerHTML="<h2>Popular Reads</h2>"+(chosen.length?chosen.map(([name,items])=>'<section class="popular-group"><div class="popular-category">'+safe(name)+'</div>'+items.map(p=>'<a href="/posts/'+encodeURIComponent(p.slug)+'/">'+safe(p.title)+'</a>').join("")+'</section>').join(""):'<p class="popular-empty">Not enough popular posts yet.</p>');
+ } catch(e) {console.error(e);box.innerHTML="<h2>Popular Reads</h2><p class=\"popular-empty\">Popular posts are temporarily unavailable.</p>";}
+})();
 document.getElementById("year").textContent = new Date().getFullYear();
 document.getElementById("share").addEventListener("click", async () => {
  const data={title:${JSON.stringify(post.title)},text:${JSON.stringify(description)},url:location.href};
