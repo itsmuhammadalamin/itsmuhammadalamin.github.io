@@ -54,6 +54,18 @@ function renderMarkdown(markdown = "") {
   flushParagraph(); flushList();
   return out.join("\n");
 }
+function renderContent(content = "") {
+  const source = String(content || "");
+  // Supabase posts may contain authored HTML or plain Markdown.
+  if (!/<\\/?(?:p|h[1-6]|ul|ol|li|blockquote|strong|em|a|br|hr|img)\\b/i.test(source)) {
+    return renderMarkdown(source);
+  }
+  return source
+    .replace(/<\\s*(script|style|iframe|object|embed)[^>]*>[\\s\\S]*?<\\s*\\/\\s*\\1\\s*>/gi, "")
+    .replace(/\\s+on[a-z]+\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)/gi, "")
+    .replace(/\\s+(href|src)\\s*=\\s*(["'])\\s*javascript:[\\s\\S]*?\\2/gi, "")
+    .replace(/\\\\n/g, "\\n");
+}
 function dateLabel(value) {
   if (!value) return "";
   const date = new Date(value);
@@ -114,7 +126,7 @@ ${image}
 <div class="date">${esc(dateLabel(post.created_at))}</div>
 ${post.excerpt ? '<p class="excerpt">' + esc(post.excerpt) + "</p>" : ""}
 ${cover}${credit}
-<article class="body">${renderMarkdown(post.content || post.excerpt || "")}</article>
+<article class="body">${renderContent(post.content || post.excerpt || "")}</article>
 <div class="actions"><button id="share">↗ Share article</button></div>
 </main>
 <footer>© <span id="year"></span> Muhammad Alamin · A Personal Chronicle</footer>
