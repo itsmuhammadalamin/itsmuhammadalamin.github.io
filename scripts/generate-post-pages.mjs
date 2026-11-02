@@ -120,7 +120,7 @@ ${image}
 </head>
 <body><div class="wrap">
 <header><a class="brand" href="/">MA<span>.</span> CHRONICLE</a><a href="/all-posts.html">← All Posts</a></header>
-<main>
+<div class="layout"><aside class="popular" id="popularSidebar" aria-label="Popular reads"><h2>Popular Reads</h2><p class="popular-empty">Loading popular posts...</p></aside><main>
 <span class="category">${esc(post.category || "Memories")}</span>
 <h1>${esc(post.title)}</h1>
 <div class="date">${esc(dateLabel(post.created_at))}</div>
@@ -128,7 +128,7 @@ ${post.excerpt ? '<p class="excerpt">' + esc(post.excerpt) + "</p>" : ""}
 ${cover}${credit}
 <article class="body">${renderContent(post.content || post.excerpt || "")}</article>
 <div class="actions"><button id="share">↗ Share article</button></div>
-</main>
+</main></div>
 <footer>© <span id="year"></span> Muhammad Alamin · A Personal Chronicle</footer>
 </div>
 <script>
