@@ -57,14 +57,14 @@ function renderMarkdown(markdown = "") {
 function renderContent(content = "") {
   const source = String(content || "");
   // Supabase posts may contain authored HTML or plain Markdown.
-  if (!/<\\/?(?:p|h[1-6]|ul|ol|li|blockquote|strong|em|a|br|hr|img)\\b/i.test(source)) {
+  if (!/<\/?(?:p|h[1-6]|ul|ol|li|blockquote|strong|em|a|br|hr|img)\b/i.test(source)) {
     return renderMarkdown(source);
   }
   return source
-    .replace(/<\\s*(script|style|iframe|object|embed)[^>]*>[\\s\\S]*?<\\s*\\/\\s*\\1\\s*>/gi, "")
-    .replace(/\\s+on[a-z]+\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)/gi, "")
-    .replace(/\\s+(href|src)\\s*=\\s*(["'])\\s*javascript:[\\s\\S]*?\\2/gi, "")
-    .replace(/\\\\n/g, "\\n");
+    .replace(/<\s*(script|style|iframe|object|embed)[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi, "")
+    .replace(/\s+on[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s+(href|src)\s*=\s*(["'])\s*javascript:[\s\S]*?\2/gi, "")
+    .replace(/\\\\n/g, "\n");
 }
 function dateLabel(value) {
   if (!value) return "";
