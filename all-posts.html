@@ -17,6 +17,13 @@
 <meta name="theme-color" content="#080808">
 <meta name="description" content="Chronicle-এ Muhammad Alamin-এর বাংলা লেখা, ইসলামিক ভাবনা, ভ্রমণ, অভিজ্ঞতা ও সব প্রকাশিত পোস্ট পড়ুন।">
 <title>সব লেখা ও গল্প | Chronicle — Muhammad Alamin</title>
+<link rel="canonical" href="https://itsmuhammadalamin.github.io/all-posts.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="সব লেখা ও গল্প | Chronicle — Muhammad Alamin">
+<meta property="og:description" content="বাংলা লেখা, ভ্রমণ, ভাবনা ও ব্যক্তিগত অভিজ্ঞতার সব প্রকাশিত পোস্ট।">
+<meta property="og:url" content="https://itsmuhammadalamin.github.io/all-posts.html">
+<meta property="og:image" content="https://itsmuhammadalamin.github.io/profile.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
 <style>
 :root {
@@ -86,16 +93,9 @@ input:focus,select:focus {border-color:var(--gold)}
 .post img {
   width:100%;
   height:240px;
-  object-fit:contain;
+  object-fit:cover;
   display:block;
-  background:transparent;
-  padding: 20px;
-}
-}
-@media (max-width: 520px) {
-  .post {
-    padding: 16px;
-  }
+  background:#171612;
 }
   .post-info {display:flex;flex-direction:column;flex:1;padding:19px}
 .category {
@@ -212,8 +212,8 @@ footer {
   </section>
 
   <div class="controls">
-    <input id="search" type="search" placeholder="Search posts...">
-    <select id="category">
+    <input id="search" type="search" placeholder="Search posts..." aria-label="Search posts">
+    <select id="category" aria-label="Filter posts by category">
       <option value="All">All Categories</option>
       <option value="Travel">Travel</option>
       <option value="Photography">Photography</option>
