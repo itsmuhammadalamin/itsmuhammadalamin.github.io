@@ -73,7 +73,7 @@ function page(post) {
       (post.image_source_url ? ' · <a href="' + esc(post.image_source_url) + '" target="_blank" rel="noopener noreferrer">Source</a>' : "") +
       "</p>" : "";
   return `<!doctype html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
