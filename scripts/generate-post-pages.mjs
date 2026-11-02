@@ -135,6 +135,14 @@ ${cover}${credit}
 const SUPABASE_URL = "https://ahfzumcsyjwkvpgcjuuy.supabase.co";
 const SUPABASE_KEY = "sb_publishable_l6zAy75h8KD25MuVY3gcHw_tFrCFSX3";
 const currentSlug = ${JSON.stringify(post.slug)};
+(async function trackView(){
+ try {
+  const key="chronicle-viewed:"+currentSlug;
+  if(sessionStorage.getItem(key)) return;
+  await fetch(SUPABASE_URL+"/rest/v1/rpc/increment_post_view",{method:"POST",headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_slug:currentSlug})});
+  sessionStorage.setItem(key,"1");
+ } catch(e) { console.warn("View count update skipped",e); }
+})();
 (async function loadPopular(){
  const box=document.getElementById("popularSidebar");
  try {
