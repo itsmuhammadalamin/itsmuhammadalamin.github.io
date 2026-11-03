@@ -619,56 +619,7 @@
         transition-duration:.01ms !important;
       }
     }
-  
-/* MA CHRONICLE — cinematic editorial redesign */
-body{background:#070706; background-image:radial-gradient(ellipse at 50% 5%,rgba(216,180,90,.13),transparent 42%),linear-gradient(180deg,#080807 0%,#0b0a08 55%,#070706 100%)}
-.wrap{width:min(1480px,calc(100% - 64px))}
-.nav{position:relative;display:flex;gap:20px;align-items:center;justify-content:space-between;padding:12px 0 15px;border-bottom:1px solid rgba(216,180,90,.45)}
-.nav:after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:linear-gradient(90deg,transparent,#f5df9a,transparent);box-shadow:0 0 14px #d8b45a}
-.profile-brand{width:76px;height:76px;flex:0 0 76px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#fff0b2,#b17b1c,#f5df9a);box-shadow:0 0 22px rgba(216,180,90,.22)}
-.profile-brand img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
-.brand-lockup{display:flex;flex-direction:column;gap:0;min-width:205px;line-height:1.25;color:#f5df9a}
-.brand-lockup strong{font-family:Georgia,serif;font-size:1.25rem;letter-spacing:.04em}
-.brand-lockup span{font-family:Georgia,serif;font-size:.9rem;color:#d8b45a}
-.nav-links{gap:clamp(12px,2.5vw,38px);margin:0 auto}
-.nav-link{display:flex;align-items:center;gap:8px;color:#e8dfca;font-family:Georgia,serif;font-size:1rem;white-space:nowrap}
-.nav-link:first-letter{color:#e5b94f}.nav-link.active,.nav-link:hover{color:#f5c85e}
-.header-emblem{width:76px;height:76px;flex:0 0 76px;display:block;filter:drop-shadow(0 0 10px rgba(216,180,90,.35))}
-.ma-emblem{width:100%;height:100%;display:block}
-.hero{position:relative;isolation:isolate;min-height:390px;grid-template-columns:1fr .85fr;gap:25px;padding:54px 4% 46px;margin:0 -32px;overflow:hidden;background:linear-gradient(90deg,rgba(5,5,4,.88),rgba(5,5,4,.5) 55%,rgba(5,5,4,.32)),url('https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=2000&q=85') center/cover}
-.hero:before{content:"";position:absolute;inset:auto -5% 0;height:60px;background:linear-gradient(90deg,transparent,#b98729,#f5df9a,#b98729,transparent);clip-path:polygon(0 75%,18% 35%,38% 75%,58% 15%,80% 70%,100% 30%,100% 38%,80% 78%,58% 23%,38% 83%,18% 43%,0 83%);opacity:.85;filter:drop-shadow(0 0 8px #d8b45a);z-index:-1}
-.hero-copy{position:relative;z-index:1}.eyebrow{font-family:Georgia,serif;font-size:1rem;letter-spacing:.02em;text-transform:none;color:#f4e8c7}
-h1{font-family:Georgia,serif;font-size:clamp(3rem,6vw,4.8rem);letter-spacing:-.04em;line-height:1.05}
-h1 .gold{display:inline;color:#e7bd61}
-.lead{font-family:Georgia,serif;color:#eee8db;max-width:590px;font-size:1.08rem}
-.btn{border-color:#c89a35;color:#f3d27b;border-radius:999px;padding:13px 22px}
-.btn.primary{background:linear-gradient(120deg,#d99e27,#ffe08b);color:#171006;box-shadow:0 0 22px rgba(218,164,52,.22)}
-.portrait-wrap{min-height:310px}
-.portrait{display:none}
-.orbit{width:min(340px,78vw);border-color:rgba(231,185,74,.65);box-shadow:0 0 30px rgba(216,180,90,.12),inset 0 0 30px rgba(216,180,90,.08)}
-.portrait-wrap:after{content:"";position:absolute;width:min(285px,68vw);aspect-ratio:1;background:url("data:image/svg+xml,%3Csvg%20class%3D'ma-emblem'%20viewBox%3D'0%200%20260%20260'%20role%3D'img'%20aria-label%3D'MA%20crowned%20monogram'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'maGold'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20stop-color%3D'%23fff0b2'%2F%3E%3Cstop%20offset%3D'.38'%20stop-color%3D'%23d8a83e'%2F%3E%3Cstop%20offset%3D'.7'%20stop-color%3D'%23fff0a0'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%238a5c12'%2F%3E%3C%2FlinearGradient%3E%3Cfilter%20id%3D'maGlow'%3E%3CfeGaussianBlur%20stdDeviation%3D'3'%20result%3D'b'%2F%3E%3CfeMerge%3E%3CfeMergeNode%20in%3D'b'%2F%3E%3CfeMergeNode%20in%3D'SourceGraphic'%2F%3E%3C%2FfeMerge%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'130'%20cy%3D'130'%20r%3D'116'%20fill%3D'none'%20stroke%3D'url(%23maGold)'%20stroke-width%3D'1.6'%20opacity%3D'.8'%2F%3E%3Cpath%20d%3D'M76%2070%20L91%2038%20L109%2062%20L130%2024%20L151%2062%20L169%2038%20L184%2070%20L176%2082%20L84%2082Z'%20fill%3D'none'%20stroke%3D'url(%23maGold)'%20stroke-width%3D'5'%20stroke-linejoin%3D'round'%2F%3E%3Cpath%20d%3D'M91%2082H169'%20stroke%3D'url(%23maGold)'%20stroke-width%3D'5'%2F%3E%3Ctext%20x%3D'130'%20y%3D'166'%20text-anchor%3D'middle'%20font-family%3D'Georgia%2Cserif'%20font-size%3D'92'%20font-weight%3D'bold'%20letter-spacing%3D'-12'%20fill%3D'url(%23maGold)'%20filter%3D'url(%23maGlow)'%3EMA%3C%2Ftext%3E%3Cpath%20d%3D'M46%20190%20C93%20218%20162%20130%20216%20159%20C180%20150%20130%20227%2062%20208'%20fill%3D'none'%20stroke%3D'url(%23maGold)'%20stroke-width%3D'7'%20stroke-linecap%3D'round'%2F%3E%3Cpath%20d%3D'M77%20226H183'%20stroke%3D'url(%23maGold)'%20stroke-width%3D'1.5'%2F%3E%3Ccircle%20cx%3D'130'%20cy%3D'226'%20r%3D'4'%20fill%3D'url(%23maGold)'%2F%3E%3C%2Fsvg%3E") center/contain no-repeat;filter:drop-shadow(0 0 22px rgba(216,180,90,.38))}
-.photo-caption{display:none}
-.section{padding:44px 0;border-top:1px solid rgba(216,180,90,.18)}
-#about .cards{gap:18px}
-#about .card{display:grid;grid-template-columns:54px 1fr;column-gap:16px;align-items:center;padding:18px 22px;border-radius:15px;background:linear-gradient(145deg,rgba(20,18,13,.95),rgba(10,10,9,.9));border-color:#9b711f}
-#about .card-icon{grid-row:span 2;width:48px;height:48px;font-size:1.65rem;margin:0;background:transparent;color:#efbd4d}
-#about .card h3{font-family:Georgia,serif;color:#f3d27b;font-size:1.2rem;margin:0}
-#about .card p{font-family:Georgia,serif;color:#d6cebd;font-size:.88rem;line-height:1.45}
-#chronicle .chronicle-intro{align-items:center}
-#chronicle .section-head{margin:0}
-#chronicle .kicker{display:none}
-#chronicle h2{font-family:Georgia,serif;font-size:2rem;margin:0}
-#chronicle .post-card{border-radius:14px;border-color:#9b711f;background:linear-gradient(145deg,#15130e,#090908)}
-#chronicle .post-image{height:180px}
-#chronicle .post-info{padding:15px 18px}
-#chronicle .post-category{letter-spacing:.04em;text-transform:none}
-#chronicle .post-info h3{font-family:Georgia,serif;font-size:1.1rem}
-#chronicle .post-info p{display:none}
-#chronicle .read-more{margin-top:9px}
-footer{border-top-color:rgba(216,180,90,.25)}
-@media(max-width:900px){.wrap{width:calc(100% - 36px)}.nav{flex-wrap:wrap}.brand-lockup{min-width:unset;flex:1}.nav-links{order:3;width:100%;justify-content:center;padding-top:8px}.hero{margin:0 -18px;padding:45px 22px}.header-emblem,.profile-brand{width:62px;height:62px;flex-basis:62px}}
-@media(max-width:620px){.wrap{width:calc(100% - 28px)}.nav{gap:10px}.profile-brand,.header-emblem{width:52px;height:52px;flex-basis:52px}.brand-lockup strong{font-size:1rem}.brand-lockup span{font-size:.75rem}.nav-links{gap:18px;justify-content:space-between}.nav-link{font-size:.78rem;gap:4px}.nav-link span{font-size:.72rem}.hero{min-height:unset;grid-template-columns:1fr;text-align:center;padding:42px 16px 35px}.hero-copy .eyebrow{justify-content:center}.hero-copy .lead{margin-left:auto;margin-right:auto}.actions{justify-content:center}.portrait-wrap{min-height:245px}.orbit{width:230px}.portrait-wrap:after{width:205px}.cards{grid-template-columns:1fr}.chronicle-grid{grid-template-columns:1fr}.section{padding:38px 0}}
-</style>
+  </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -677,7 +628,15 @@ footer{border-top-color:rgba(216,180,90,.25)}
 <body>
   <div class="wrap">
 
-    <header class="nav"><a class="profile-brand" href="/" aria-label="Muhammad Alamin home"><img src="/profile.jpg" alt="Muhammad Alamin"></a><a class="brand-lockup" href="/"><strong>MA. CHRONICLE</strong><span>Learn · Reflect · Grow</span></a><nav class="nav-links" aria-label="Main navigation"><a class="nav-link active" href="/">⌂ <span>Home</span></a><a class="nav-link" href="/all-posts.html">▤ <span>All Posts</span></a><a class="nav-link" href="/#about">♧ <span>About</span></a><a class="nav-link" href="/#connect">↗ <span>Connect</span></a></nav><a class="header-emblem" href="/" aria-label="MA Chronicle"><svg class="ma-emblem" viewBox="0 0 260 260" role="img" aria-label="MA crowned monogram"><defs><linearGradient id="maGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0b2"/><stop offset=".38" stop-color="#d8a83e"/><stop offset=".7" stop-color="#fff0a0"/><stop offset="1" stop-color="#8a5c12"/></linearGradient><filter id="maGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="130" cy="130" r="116" fill="none" stroke="url(#maGold)" stroke-width="1.6" opacity=".8"/><path d="M76 70 L91 38 L109 62 L130 24 L151 62 L169 38 L184 70 L176 82 L84 82Z" fill="none" stroke="url(#maGold)" stroke-width="5" stroke-linejoin="round"/><path d="M91 82H169" stroke="url(#maGold)" stroke-width="5"/><text x="130" y="166" text-anchor="middle" font-family="Georgia,serif" font-size="92" font-weight="bold" letter-spacing="-12" fill="url(#maGold)" filter="url(#maGlow)">MA</text><path d="M46 190 C93 218 162 130 216 159 C180 150 130 227 62 208" fill="none" stroke="url(#maGold)" stroke-width="7" stroke-linecap="round"/><path d="M77 226H183" stroke="url(#maGold)" stroke-width="1.5"/><circle cx="130" cy="226" r="4" fill="url(#maGold)"/></svg></a></header>
+    <header class="nav">
+      <a class="brand" href="/" aria-label="Muhammad Alamin home">MA<span>.</span></a>
+
+      <nav class="nav-links">
+        <a class="nav-link" href="#about">ABOUT ME ↘</a>
+        <a class="nav-link" href="#chronicle">CHRONICLE ↘</a>
+        <a class="nav-link" href="#connect">CONNECT ↘</a>
+      </nav>
+    </header>
 
     <main>
 
