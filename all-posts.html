@@ -24,7 +24,7 @@
 <meta property="og:url" content="https://itsmuhammadalamin.github.io/all-posts.html">
 <meta property="og:image" content="https://itsmuhammadalamin.github.io/profile.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=5" type="image/svg+xml">
 <style>
 :root {
   --bg:#080808;
@@ -49,8 +49,8 @@ header {
   display:flex;justify-content:space-between;align-items:center;
   padding:22px 0;border-bottom:1px solid var(--line);
 }
-.brand {font-weight:800;letter-spacing:.08em}
-.brand span {color:var(--gold)}
+.brand {display:inline-flex;align-items:center;flex-shrink:0;line-height:0}
+.brand img {display:block;width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(216,180,90,.24))}
 .back {color:var(--gold2);font-size:.9rem}
 .hero {padding:55px 0 30px}
 .kicker {
@@ -200,7 +200,7 @@ footer {
 <body>
 <div class="wrap">
 <header>
-  <a class="brand" href="/">MA<span>.</span></a>
+  <a class="brand" href="/" aria-label="Muhammad Alamin home"><img src="/favicon.svg?v=5" alt="MA crowned emblem"></a>
   <a class="back" href="/">← Back to Home</a>
 </header>
 
