@@ -72,12 +72,19 @@
     }
 
     .brand {
-      font-weight:800;
-      letter-spacing:.08em;
-      font-size:.95rem;
+      display:inline-flex;
+      align-items:center;
+      flex-shrink:0;
+      line-height:0;
     }
 
-    .brand span { color:var(--gold); }
+    .brand img {
+      display:block;
+      width:46px;
+      height:46px;
+      object-fit:contain;
+      filter:drop-shadow(0 0 8px rgba(216,180,90,.24));
+    }
 
     .nav-links {
       display:flex;
@@ -629,7 +636,9 @@
   <div class="wrap">
 
     <header class="nav">
-      <a class="brand" href="/" aria-label="Muhammad Alamin home">MA<span>.</span></a>
+      <a class="brand" href="/" aria-label="Muhammad Alamin home">
+        <img src="/favicon.svg?v=5" alt="MA crowned emblem">
+      </a>
 
       <nav class="nav-links">
         <a class="nav-link" href="#about">ABOUT ME ↘</a>
